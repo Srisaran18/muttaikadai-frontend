@@ -155,3 +155,11 @@ a{
     /* border-left: 0.5rem solid var(--clr-secondary); */
 }
 
+.service-card {
+  transition: transform 0.3s ease;
+  background-color: var(--clr-grey-3);
+}
+.service-card:hover {
+  transform: translateY(-5px);
+  background: #f8f9fa;
+}
