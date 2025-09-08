@@ -40,6 +40,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/home" element={<Home />} />
             <Route path="/products/:id" element={<Products />} />
+            <Route path="/products/" element={<Products />} />
             {/* <Route path="/home" element={<Test />} /> */}
             <Route
               path="/cart"
@@ -52,9 +53,9 @@ function App() {
             <Route
               path="/userProfile"
               element={
-                // <ProtectedRoute>
+                <ProtectedRoute>
                   <UserProfile />
-                // </ProtectedRoute>
+                </ProtectedRoute>
               }
             />
             <Route

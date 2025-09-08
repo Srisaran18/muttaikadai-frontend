@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Offcanvas, Button } from "react-bootstrap";
 import API_URL from "../../Config";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 
 const Products = () => {
@@ -238,7 +238,9 @@ const Products = () => {
               </ul>
               <h5>Total: ₹{total}</h5>
               <Button variant="success" className="w-100 mt-3">
-                Checkout
+                <Link to="/cart" className="text-white text-decoration-none">
+                  Proceed to Checkout
+                </Link>
               </Button>
             </>
           )}
