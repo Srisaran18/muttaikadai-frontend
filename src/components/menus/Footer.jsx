@@ -1,172 +1,56 @@
-import React from "react";
-import logo from "../../assets/images/logo/mainlogo.png";
-import footer1 from "../../assets/images/footer/footer1.jpg"
-import footer2 from "../../assets/images/footer/footer2.jpg"
-import footer3 from "../../assets/images/footer/footer3.jpg"
 
+import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="footer">
+    <footer className="bg-dark text-white pt-4 pb-3 mt-5">
       <div className="container">
         <div className="row">
-          {/* Logo + About + Socials */}
-          <div className="col-md-4 col-lg-3">
-            <div className="logo">
-              <img
-                className="img-fluid"
-                src={logo}
-                alt="Muttaikadai Logo"
-              />
-              <p>
-                Muttaikadai – Your trusted source for fresh eggs, healthy chicks,
-                and poultry farm maintenance solutions. We hatch quality, you
-                grow prosperity.
-              </p>
-              <ul>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-facebook-f"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-twitter"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-instagram"></i>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-youtube"></i>
-                  </a>
-                </li>
-              </ul>
-            </div>
+
+          {/* About Section */}
+          <div className="col-md-4 mb-4 pe-4">
+            <h5>About Us</h5>
+            <p className="text-white ">
+              We provide quality services and products to our customers with dedication and care.
+            </p>
           </div>
 
-          {/* Quick Links */}
-          <div className="col-md-4 col-lg-3">
-            <div className="footer-title">
-              <h4>Quick Links</h4>
-            </div>
-            <ul className="links">
-              <li>
-                <a href="/"><i className="fas fa-egg"></i> Home</a>
-              </li>
-              <li>
-                <a href="/about"><i className="fas fa-egg"></i> About Us</a>
-              </li>
-              <li>
-                <a href="/products"><i className="fas fa-egg"></i> Products</a>
-              </li>
-              <li>
-                <a href="/services"><i className="fas fa-egg"></i> Services</a>
-              </li>
-              <li>
-                <a href="/gallery"><i className="fas fa-egg"></i> Gallery</a>
-              </li>
-              <li>
-                <a href="/blog"><i className="fas fa-egg"></i> Blog</a>
-              </li>
-              <li>
-                <a href="/contact"><i className="fas fa-egg"></i> Contact</a>
-              </li>
+          {/* Useful Links */}
+          <div className="col-md-4 mb-4 ">
+            <h5>Useful Links</h5>
+            <ul className="list">
+              <li><a href="/" className="text-white text-decoration-none">Home</a></li>
+              <li><a href="/about" className="text-white text-decoration-none">About</a></li>
+              <li><a href="/services" className="text-white text-decoration-none">Services</a></li>
+              <li><a href="/contact" className="text-white text-decoration-none">Contact</a></li>
             </ul>
           </div>
 
-          {/* Latest News */}
-          <div className="col-md-4 col-lg-3">
-            <div className="footer-title">
-              <h4>Latest Updates</h4>
-            </div>
-            <div className="news-item">
-              <img
-                className="img-fluid"
-                src={footer3}
-                alt="Fresh Eggs"
-              />
-              <div className="item-content">
-                <span>
-                  <a href="#">Aug 20, 2025</a>
-                </span>
-                <a href="#" className="title-blog">
-                  <h5>Fresh Country Eggs Available Daily</h5>
-                </a>
-              </div>
-            </div>
-            <div className="news-item">
-              <img
-                className="img-fluid"
-                src={footer2}
-                alt="Chicks Batch"
-              />
-              <div className="item-content">
-                <span>
-                  <a href="#">Aug 25, 2025</a>
-                </span>
-                <a href="#" className="title-blog">
-                  <h5>New Batch of Healthy Chicks Hatched</h5>
-                </a>
-              </div>
-            </div>
-            <div className="news-item">
-              <img
-                className="img-fluid"
-                src={footer1}
-                alt="Farm Tips"
-              />
-              <div className="item-content">
-                <span>
-                  <a href="#">Sep 1, 2025</a>
-                </span>
-                <a href="#" className="title-blog">
-                  <h5>Tips for Poultry Farm Maintenance</h5>
-                </a>
-              </div>
-            </div>
-          </div>
-
           {/* Contact Info */}
-          <div className="col-md-6 col-lg-3">
-            <div className="footer-title">
-              <h4>Contact Info</h4>
-            </div>
-            <div className="contact-us">
-              <span>Call Us</span>
-              <div>+(91) 9663460555</div>
-            </div>
-            <div className="contact-us">
-              <span>Email Us</span>
-              <div>info@muttaikadai.com</div>
-            </div>
-            <div className="contact-us">
-              <span>Visit Us</span>
-              <div>Muttaikadai Farms, coimbatore , Tamil nadu</div>
+          <div className="col-md-4 mb-4">
+            <h5>Contact</h5>
+            <ul className="list-unstyled text-primary">
+              <li><i className="bi bi-geo-alt-fill me-2"></i> 123 Main Street, City</li>
+              <li><i className="bi bi-envelope-fill me-2"></i> email@example.com</li>
+              <li><i className="bi bi-telephone-fill me-2"></i> +1 234 567 890</li>
+            </ul>
+            <div className="mt-3">
+              <a href="#" className="text-white me-3"><i className="bi bi-facebook"></i></a>
+              <a href="#" className="text-white me-3"><i className="bi bi-twitter"></i></a>
+              <a href="#" className="text-white me-3"><i className="bi bi-instagram"></i></a>
+              <a href="#" className="text-white"><i className="bi bi-linkedin"></i></a>
             </div>
           </div>
         </div>
 
-        {/* Bottom Reserved Section */}
-        <div className="reserved">
-          <p>&#64; Muttaikadai 2025. All Rights Reserved. Developed by <span className="highlight">YoungZen Technologies</span></p>
-          <ul>
-            <li>
-              <a href="#">Terms &amp; Conditions </a>
-            </li>
-            <li>/</li>
-            <li>
-              <a href="#">Sitemap</a>
-            </li>
-            <li>/</li>
-            <li>
-              <a href="#">Privacy Policy</a>
-            </li>
-          </ul>
+        <hr className="border-secondary" />
+        <div className="text-center text-white">
+          © {new Date().getFullYear()} <span className='text-danger'>Egg Cart</span>. All rights reserved.
         </div>
+        <div className="text-center foot-count">
+           <p>Egg Cart – Trusted by households worldwide for fresh and farm-to-door egg delivery. <a
+             href="#" className="btn btn-primary btn-sm">Join us today !</a></p>
+         </div>
       </div>
     </footer>
   );

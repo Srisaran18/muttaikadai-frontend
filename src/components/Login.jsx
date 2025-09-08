@@ -1,0 +1,166 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useAuth } from "../context/AuthContext";
+import API_URL from "../Config";
+
+const Login = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+
+    let isValid = true;
+
+    if (!emailRegex.test(email)) {
+      setEmailError("Invalid email format.");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!password) {
+      setPasswordError("Password is required.");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!isValid) return;
+
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const result = await response.json();
+      console.log("Complete login response:", {
+        status: response.status,
+        ok: response.ok,
+        result,
+        hasToken: !!result.token,
+        hasUsername: !!result.username,
+        hasEmail: !!result.email,
+        resultKeys: Object.keys(result)
+      });
+
+      if (response.ok && result.token) {
+        const userData = {
+          username: result.username,
+          email: result.email
+        };
+        console.log("Setting user data:", userData);
+        console.log("User data validation:", {
+          hasUsername: !!userData.username,
+          hasEmail: !!userData.email,
+          username: userData.username,
+          email: userData.email
+        });
+        login(userData, result.token);
+
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", "true");
+        }
+
+        alert("Login successful!");
+        navigate("/home");
+      } else {
+        alert(result.message || "Login failed");
+      }
+    } catch (err) {
+      console.error("Server error:", err);
+      alert("Server error. Please try again later.");
+    }
+  };
+
+  return (
+    <div className="min-vh-100 d-flex justify-content-center align-items-center bg-light">
+      <div
+        className="border rounded p-4 shadow-sm"
+        style={{ width: "100%", maxWidth: "400px" }}
+      >
+        <h2 className="text-center mb-4">Login</h2>
+
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="mb-3">
+            <label htmlFor="emailInput" className="form-label">
+              Email
+            </label>
+            <input
+              id="emailInput"
+              type="email"
+              className={`form-control ${emailError ? "is-invalid" : ""}`}
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+            {emailError &&
+              <div className="invalid-feedback">
+                {emailError}
+              </div>}
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="passwordInput" className="form-label">
+              Password
+            </label>
+            <input
+              id="passwordInput"
+              type="password"
+              className={`form-control ${passwordError ? "is-invalid" : ""}`}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+            {passwordError &&
+              <div className="invalid-feedback">
+                {passwordError}
+              </div>}
+          </div>
+
+          <div className="mb-3 form-check">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={e => setRememberMe(e.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="rememberMe">
+              Remember me
+            </label>
+          </div>
+
+          <button type="submit" className="btn btn-primary w-100">
+            Login
+          </button>
+        </form>
+
+        <div className="text-center mt-3">
+          <a href="#" className="small">
+            Forgot password?
+          </a>
+          <br />
+          <span className="small">
+            Don't have an account? <Link to="/register">Sign up</Link>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
