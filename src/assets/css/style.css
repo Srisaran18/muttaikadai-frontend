@@ -108,10 +108,10 @@ p {
 
 /* :: My Classes */
 .py-100{
-    padding: 100px 0;
+    padding: 10px 0;
 }
 .py-100-70{
-    padding: 100px 0 70px 0;
+    padding: 10px 0 70px 0;
 }
 .overlay,
 .overlay-1{
@@ -353,7 +353,7 @@ p {
 .top-nav{
     background-color: #FFF;
     overflow: hidden;
-    padding: 10px 20px 30px 20px;
+    padding: 10px 20px 3px 20px;
     margin-top: 2px;
 }
 .nav-box.active .top-nav{
@@ -408,7 +408,7 @@ p {
     font-weight: bold;
 }
 .top-nav .nav-info .btn-1{
-    margin-left: 20px;
+    margin-left: 300px;
 }
 
 /* :: Bottom Navbar */
@@ -683,22 +683,28 @@ p {
 .header{
     height: 100vh;
 }
-.header-2{
-    background-image: url(../images/header/02_header.jpg);
-    color: #FFF;
-    position: relative;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+.header-2 {
+  background-image: url(../images/header/02_header.jpg);
+  color: #FFF;
+  position: relative;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 50vh;         /* Half the viewport height */
+  display: flex;        /* To center content */
+  align-items: center;  /* Vertical center */
+  justify-content: center; /* Horizontal center */
+  text-align: center;
 }
+
 .header-2{
     background-image: url(../images/header/03_header.jpg);
     height: auto;
 }
-.header-2 .box-padding{
+/* .header-2 .box-padding{
     padding-top: 270px;
     padding-bottom: 220px;
-}
+} */
 .header .hero-slider .box-slider{
     position: relative;
     overflow: hidden;
@@ -733,7 +739,7 @@ p {
                 transform: scale(1.2);
     }
 }
-.banner .top-handline{
+/* .banner .top-handline{
     line-height: 23px;
     font-weight: 700;
     font-size: 14px;
@@ -757,7 +763,47 @@ p {
     font-weight: 600;
     line-height: 25px;
     margin-bottom: 30px;
+} */
+
+.banner {
+  display: flex;
+  flex-direction: column;   /* stack text vertically */
+  justify-content: center;  /* vertical center */
+  align-items: center;      /* horizontal center */
+  text-align: center;       /* make sure multi-line text is centered */
+  min-height: 100vh;        /* full screen height (or use 50vh for half screen) */
 }
+
+.banner .top-handline {
+  line-height: 23px;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #006492;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+}
+
+.banner .handline {
+  color: #222;
+  text-transform: capitalize;
+  font-weight: 800;
+  line-height: 1.2;
+  font-size: 52px;
+  margin-bottom: 30px;
+}
+
+.banner .about-website {
+  text-transform: capitalize;
+  font-size: 16px;
+  color: #343434;
+  font-weight: 600;
+  line-height: 25px;
+  margin-bottom: 30px;
+}
+
+
+
 .banner .button a:first-of-type{
     margin-right: 20px;
 }
