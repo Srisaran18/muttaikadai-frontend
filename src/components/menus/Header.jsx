@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Dropdown } from 'react-bootstrap';
-import { FaUserCircle } from 'react-icons/fa';
-import { useAuth } from '../../context/AuthContext';
-import { Link, useLocation } from 'react-router-dom';
-import API_URL from '../../Config';
+import React, { useState, useRef, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Dropdown } from "react-bootstrap";
+import { FaUserCircle } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
+import { Link, useLocation } from "react-router-dom";
+import API_URL from "../../Config";
 
 const Header = () => {
   const { user, logout } = useAuth();
@@ -14,10 +14,10 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.href = '/login';
+    window.location.href = "/login";
   };
 
-  const displayName = user?.username || 'Login';
+  const displayName = user?.username || "Login";
 
   // Close mobile menu
   const closeMobileMenu = () => {
@@ -25,13 +25,12 @@ const Header = () => {
   };
 
   const scrollToSection = (sectionId) => {
-    // Close mobile menu when clicking on navigation links
     closeMobileMenu();
 
-    if (location.pathname === '/home') {
+    if (location.pathname === "/home") {
       const element = document.getElementById(sectionId);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
       window.location.href = `/home#${sectionId}`;
@@ -57,21 +56,22 @@ const Header = () => {
     };
 
     if (isMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isMenuOpen]);
 
   return (
     <nav
-      className="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-4"
+      className="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-4 d-flex align-items-center"
       style={{ position: "sticky", top: 0, zIndex: 1000 }}
       ref={navbarRef}
     >
-      <div className="container-fluid">
+      <div className="container-fluid d-flex align-items-center justify-content-between">
+        {/* Brand */}
         <Link
           className="navbar-brand text-danger fw-bold"
           to="/"
@@ -79,6 +79,8 @@ const Header = () => {
         >
           Muttaikadai
         </Link>
+
+        {/* Mobile toggle */}
         <button
           className="navbar-toggler"
           type="button"
@@ -90,6 +92,7 @@ const Header = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
+        {/* Nav links + right-side actions */}
         <div
           className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
           id="navbarNav"
@@ -101,7 +104,11 @@ const Header = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/products" onClick={handleLinkClick}>
+              <Link
+                className="nav-link"
+                to="/products"
+                onClick={handleLinkClick}
+              >
                 Products
               </Link>
             </li>
@@ -143,6 +150,7 @@ const Header = () => {
             </li>
           </ul>
 
+          {/* Right side (Cart + User dropdown) */}
           <div className="d-flex align-items-center gap-3">
             {user && (
               <Link

@@ -43,24 +43,34 @@ const Home = () => {
           <div className="carousel-item active">
             <img src={bannerImage1} className="d-block w-100" alt="Slide 1" />
             <div className="carousel-caption d-none d-md-block">
-              <h5>First Slide</h5>
-              <p>Some quick example text for Slide 1.</p>
+              <h5>Farm Fresh Eggs, Every Day</h5>
+              <p>
+                Nutritious chicken and quail eggs, sourced directly from healthy
+                farms. Packed with protein, freshness, and delivered with care.
+              </p>
             </div>
           </div>
 
           <div className="carousel-item">
             <img src={bannerImage2} className="d-block w-100" alt="Slide 2" />
             <div className="carousel-caption d-none d-md-block">
-              <h5>Second Slide</h5>
-              <p>Some quick example text for Slide 2.</p>
+              <h5>Strong Chicks, Healthy Farms</h5>
+              <p>
+                We provide high-quality chicks to boost your poultry business.
+                Carefully raised for strength, growth, and long-term
+                productivity.
+              </p>
             </div>
           </div>
 
           <div className="carousel-item">
             <img src={bannerImage3} className="d-block w-100" alt="Slide 3" />
             <div className="carousel-caption d-none d-md-block">
-              <h5>Third Slide</h5>
-              <p>Some quick example text for Slide 3.</p>
+              <h5>Quails – Small Birds, Big Benefits</h5>
+              <p>
+                Supplying live quails and quail eggs rich in nutrients and
+                flavor. Trusted by farms, hotels, and households alike.
+              </p>
             </div>
           </div>
         </div>
@@ -213,7 +223,7 @@ const Home = () => {
             <div className="col-md-6">
               <h2 className="mb-3">Uncompromising Quality You Can Trust</h2>
               <p className="text-muted">
-                At Egg Cart, we prioritize freshness and purity in every egg we
+                At Muttaikadai, we prioritize freshness and purity in every egg we
                 deliver. Our eggs are sourced directly from trusted farms,
                 handled with care, and quality-checked to ensure you receive
                 nothing but the best.
