@@ -24,6 +24,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import ManageUsers from "./components/admin/ManageUsers";
 import SalesGraph from "./components/admin/SalesGraph";
+import Products from "./components/pages/Products";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/products" element={<Products />} />
             {/* <Route path="/home" element={<Test />} /> */}
             <Route
               path="/cart"

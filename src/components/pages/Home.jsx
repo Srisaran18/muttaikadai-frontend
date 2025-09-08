@@ -4,6 +4,10 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Required for Carousel fun
 import bannerImage1 from "../../assets/images/banner.jpg"; // Add your image to src/assets/banner.jpg
 import bannerImage2 from "../../assets/images/banner2.jpg"; // Add your image to src/assets/banner.jpg
 import bannerImage3 from "../../assets/images/banner3.jpg"; // Add your image to src/assets/banner.jpg
+import product1 from "../../assets/images/products/product1.jpg";
+import product2 from "../../assets/images/products/product2.jpg";
+import product3 from "../../assets/images/products/product3.jpg";
+import product4 from "../../assets/images/products/product4.jpg";
 import incubator from "../../assets/images/incubator.png";
 import heater from "../../assets/images/heater.png";
 import eggBoiler from "../../assets/images/eggboiler.png";
@@ -186,132 +190,130 @@ const Home = () => {
       </div>
 
       <section className="features clearfix" id="features">
+        {/* Broiler Eggs */}
         <div className="feature">
           <span className="feature-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path d="M640-440 474-602q-31-30-52.5-66.5T400-748q0-55 38.5-93.5T532-880q32 0 60 13.5t48 36.5q20-23 48-36.5t60-13.5q55 0 93.5 38.5T880-748q0 43-21 79.5T807-602L640-440Zm0-112 109-107q19-19 35-40.5t16-48.5q0-22-15-37t-37-15q-14 0-26.5 5.5T700-778l-60 72-60-72q-9-11-21.5-16.5T532-800q-22 0-37 15t-15 37q0 27 16 48.5t35 40.5l109 107ZM280-220l278 76 238-74q-5-9-14.5-15.5T760-240H558q-27 0-43-2t-33-8l-93-31 22-78 81 27q17 5 40 8t68 4q0-11-6.5-21T578-354l-234-86h-64v220ZM40-80v-440h304q7 0 14 1.5t13 3.5l235 87q33 12 53.5 42t20.5 66h80q50 0 85 33t35 87v40L560-60l-280-78v58H40Zm80-80h80v-280h-80v280Zm520-546Z" />
-            </svg>
+            <i className="fas fa-egg"></i>
           </span>
-          <h4 className="feature-title">Made With Love</h4>
+          <h4 className="feature-title">Broiler Eggs</h4>
           <p className="feature-text">
-            Discover hertfelt hospitality in our cozy ,lovingly accomodations
+            Fresh, affordable broiler eggs available in bulk and retail packs
+            for households, hotels, and shops.
           </p>
         </div>
+
+        {/* Country Chicken Eggs */}
         <div className="feature">
           <span className="feature-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path d="M280-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z" />
-            </svg>
+            <i className="fas fa-drumstick-bite"></i>
           </span>
-          <h4 className="feature-title">Taste</h4>
+          <h4 className="feature-title">Country Chicken Eggs</h4>
           <p className="feature-text">
-            Savor thr love in every bite of our exquisite,crafted cuisine
+            Nutritious desi eggs rich in protein and taste — perfect for a
+            healthy lifestyle.
           </p>
         </div>
+
+        {/* Country Chicken */}
         <div className="feature">
           <span className="feature-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path d="M160-120v-80h640v80H160Zm160-160q-66 0-113-47t-47-113v-400h640q33 0 56.5 23.5T880-760v120q0 33-23.5 56.5T800-560h-80v120q0 66-47 113t-113 47H320Zm0-80h240q33 0 56.5-23.5T640-440v-320H240v320q0 33 23.5 56.5T320-360Zm400-280h80v-120h-80v120ZM320-360h-80 400-320Z" />
-            </svg>
+            <i className="fas fa-feather"></i>
           </span>
-          <h4 className="feature-title">Energy</h4>
+          <h4 className="feature-title">Country Chicken</h4>
           <p className="feature-text">
-            Feel the vibrant energy and warmth in our welcoming , lively
-            atmosphere
+            Farm-raised native chickens, known for their natural flavor and
+            health benefits.
           </p>
         </div>
+
+        {/* Quails */}
         <div className="feature">
           <span className="feature-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path d="M400-160h160v-44l50-20q65-26 110.5-72.5T786-400H174q20 57 65 103.5T350-224l50 20v44Zm-80 80v-70q-107-42-173.5-130T80-480h80v-320l720-80v60l-460 52v68h460v60H420v160h460q0 112-66.5 200T640-150v70H320Zm0-620h40v-62l-40 5v57Zm-100 0h40v-50l-40 4v46Zm100 220h40v-160h-40v160Zm-100 0h40v-160h-40v160Zm260 80Z" />
-            </svg>
+            <i className="fas fa-dove"></i>
           </span>
-          <h4 className="feature-title">Family recepie</h4>
+          <h4 className="feature-title">Quails</h4>
           <p className="feature-text">
-            Enjoy our family recepies, lovingly crafted for a taste of tradition
+            Small, nutrient-packed quail birds and eggs — ideal for gourmet
+            cooking and nutrition.
           </p>
         </div>
       </section>
 
-      {/* Promo Cards */}
+      {/* Product Cards */}
       <div className="container my-5" id="promo">
         <div className="row text-center g-4">
-          <div className="col-md-4">
+          <h2>Our Products</h2>
+          <div className="col-md-3">
             <a href="#products" className="text-decoration-none">
               <div
                 className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
                 style={{ height: "300px" }}
               >
                 <img
-                  src={incubator}
+                  src={product1}
                   alt="Incubator"
                   className="img-fluid w-100"
                   style={{ height: "80%", objectFit: "cover" }}
                 />
                 <div className="p-2">
-                  <h5 className="mb-0 text-dark">New Arrivals</h5>
+                  <h5 className="mb-0 text-dark">Quails (kaadai)</h5>
                 </div>
               </div>
             </a>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-3">
+            <a href="#products" className="text-decoration-none">
+              <div
+                className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
+                style={{ height: "300px" }}
+              >
+                <img
+                  src={product2}
+                  alt="Incubator"
+                  className="img-fluid w-100"
+                  style={{ height: "80%", objectFit: "cover" }}
+                />
+                <div className="p-2">
+                  <h5 className="mb-0 text-dark">Broiler Eggs</h5>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div className="col-md-3">
             <a href="#services" className="text-decoration-none">
               <div
                 className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
                 style={{ height: "300px" }}
               >
                 <img
-                  src={heater}
+                  src={product3}
                   alt="Heater"
                   className="img-fluid w-100"
                   style={{ height: "80%", objectFit: "cover" }}
                 />
                 <div className="p-2">
-                  <h5 className="mb-0 text-dark">Extra 15% Off</h5>
+                  <h5 className="mb-0 text-dark">Country chicken Eggs</h5>
                 </div>
               </div>
             </a>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-3">
             <a href="#delivery" className="text-decoration-none">
               <div
                 className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
                 style={{ height: "300px" }}
               >
                 <img
-                  src={eggBoiler}
+                  src={product4}
                   alt="Egg Boiler"
                   className="img-fluid w-100"
                   style={{ height: "80%", objectFit: "cover" }}
                 />
                 <div className="p-2">
-                  <h5 className="mb-0 text-dark">Free Shipping</h5>
+                  <h5 className="mb-0 text-dark">Country Chicken</h5>
                 </div>
               </div>
             </a>
@@ -584,13 +586,13 @@ const Home = () => {
                   className="text-primary text-center mb-4"
                   style={{
                     fontFamily: "var(--ff-design)",
-                    fontSize: "1.75rem"
+                    fontSize: "1.75rem",
                   }}
                 >
                   Contact Us
                 </h3>
 
-                {showAlert &&
+                {showAlert && (
                   <div
                     className="alert alert-warning alert-dismissible fade show"
                     role="alert"
@@ -602,79 +604,76 @@ const Home = () => {
                       onClick={() => setShowAlert(false)}
                       aria-label="Close"
                     />
-                  </div>}
+                  </div>
+                )}
 
                 <form onSubmit={handleSubmit} noValidate>
                   <div className="form-group position-relative mb-4">
                     <input
                       type="text"
-                      className={`form-control ${errors.name
-                        ? "is-invalid"
-                        : ""}`}
+                      className={`form-control ${
+                        errors.name ? "is-invalid" : ""
+                      }`}
                       required
                       id="name"
                       placeholder="Name"
                       value={name}
-                      onChange={e => setName(e.target.value)}
+                      onChange={(e) => setName(e.target.value)}
                     />
-                    {errors.name &&
-                      <div className="invalid-feedback">
-                        {errors.name}
-                      </div>}
+                    {errors.name && (
+                      <div className="invalid-feedback">{errors.name}</div>
+                    )}
                   </div>
 
                   <div className="form-group position-relative mb-4">
                     <input
                       type="email"
-                      className={`form-control ${errors.email
-                        ? "is-invalid"
-                        : ""}`}
+                      className={`form-control ${
+                        errors.email ? "is-invalid" : ""
+                      }`}
                       required
                       id="email"
                       placeholder="Email"
                       value={email}
-                      onChange={e => setEmail(e.target.value)}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
-                    {errors.email &&
-                      <div className="invalid-feedback">
-                        {errors.email}
-                      </div>}
+                    {errors.email && (
+                      <div className="invalid-feedback">{errors.email}</div>
+                    )}
                   </div>
 
                   <div className="form-group position-relative mb-4">
                     <input
                       type="tel"
-                      className={`form-control ${errors.phone
-                        ? "is-invalid"
-                        : ""}`}
+                      className={`form-control ${
+                        errors.phone ? "is-invalid" : ""
+                      }`}
                       required
                       id="phone"
                       placeholder="Phone Number"
                       value={phone}
-                      onChange={e => setPhone(e.target.value)}
+                      onChange={(e) => setPhone(e.target.value)}
                     />
-                    {errors.phone &&
-                      <div className="invalid-feedback">
-                        {errors.phone}
-                      </div>}
+                    {errors.phone && (
+                      <div className="invalid-feedback">{errors.phone}</div>
+                    )}
                   </div>
 
                   <div className="form-group position-relative mb-4">
                     <textarea
-                      className={`form-control ${errors.message
-                        ? "is-invalid"
-                        : ""}`}
+                      className={`form-control ${
+                        errors.message ? "is-invalid" : ""
+                      }`}
                       required
                       id="message"
                       placeholder="Message"
                       style={{ resize: "none", height: "100px" }}
                       value={message}
-                      onChange={e => setMessage(e.target.value)}
+                      onChange={(e) => setMessage(e.target.value)}
                     />
-                    {errors.message &&
-                      <div className="invalid-feedback">
-                        {errors.message}
-                      </div>}
+                    {errors.message && (
+                      <div className="invalid-feedback">{errors.message}</div>
+                    )}
                   </div>
 
                   <button

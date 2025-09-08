@@ -66,44 +66,100 @@ const Header = () => {
   }, [isMenuOpen]);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-4" style={{ position: 'sticky', top: 0, zIndex: 1000 }} ref={navbarRef}>
+    <nav
+      className="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-4"
+      style={{ position: "sticky", top: 0, zIndex: 1000 }}
+      ref={navbarRef}
+    >
       <div className="container-fluid">
-        <Link className="navbar-brand text-danger fw-bold" to="/" onClick={handleLinkClick}>Egg Cart</Link>
-        <button 
-          className="navbar-toggler" 
-          type="button" 
+        <Link
+          className="navbar-brand text-danger fw-bold"
+          to="/"
+          onClick={handleLinkClick}
+        >
+          Muttaikadai
+        </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
           onClick={handleMenuToggle}
-          aria-controls="navbarNav" 
-          aria-expanded={isMenuOpen} 
+          aria-controls="navbarNav"
+          aria-expanded={isMenuOpen}
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`} id="navbarNav">
+        <div
+          className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
+          id="navbarNav"
+        >
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" to="/home" onClick={handleLinkClick}>Home</Link>
+              <Link className="nav-link" to="/home" onClick={handleLinkClick}>
+                Home
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); scrollToSection('products'); }}>Products</a>
+              <Link className="nav-link" to="/products" onClick={handleLinkClick}>
+                Products
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); scrollToSection('quality'); }}>About us</a>
+              <a
+                className="nav-link"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("quality");
+                }}
+              >
+                About us
+              </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Our Services</a>
+              <a
+                className="nav-link"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("services");
+                }}
+              >
+                Our Services
+              </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact Us</a>
+              <a
+                className="nav-link"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("contact");
+                }}
+              >
+                Contact Us
+              </a>
             </li>
           </ul>
 
           <div className="d-flex align-items-center gap-3">
-            {user && <Link className="text-dark text-decoration-none" to="/cart" onClick={handleLinkClick}>🛒 Cart</Link>}
+            {user && (
+              <Link
+                className="text-dark text-decoration-none"
+                to="/cart"
+                onClick={handleLinkClick}
+              >
+                🛒 Cart
+              </Link>
+            )}
 
             <Dropdown align="end">
-              <Dropdown.Toggle variant="primary" id="dropdown-basic" className="d-flex align-items-center">
+              <Dropdown.Toggle
+                variant="primary"
+                id="dropdown-basic"
+                className="d-flex align-items-center"
+              >
                 <FaUserCircle className="me-2" size={20} />
                 {displayName}
               </Dropdown.Toggle>
@@ -111,20 +167,57 @@ const Header = () => {
               <Dropdown.Menu className="mt-2">
                 {!user ? (
                   <>
-                    <Dropdown.Item as={Link} to="/login" onClick={handleLinkClick}>👤 Login</Dropdown.Item>
+                    <Dropdown.Item
+                      as={Link}
+                      to="/login"
+                      onClick={handleLinkClick}
+                    >
+                      👤 Login
+                    </Dropdown.Item>
                     <Dropdown.Divider />
-                    <p className='m-2'>New User ?</p>
-                    <Dropdown.Item as={Link} to="/register" onClick={handleLinkClick}>👤 Register</Dropdown.Item>
+                    <p className="m-2">New User ?</p>
+                    <Dropdown.Item
+                      as={Link}
+                      to="/register"
+                      onClick={handleLinkClick}
+                    >
+                      👤 Register
+                    </Dropdown.Item>
                   </>
                 ) : (
                   <>
-                    <Dropdown.Item as={Link} to="/userProfile" onClick={handleLinkClick}>👤 My Profile</Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/myOrders" onClick={handleLinkClick}>📦 Orders</Dropdown.Item>
+                    <Dropdown.Item
+                      as={Link}
+                      to="/userProfile"
+                      onClick={handleLinkClick}
+                    >
+                      👤 My Profile
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      as={Link}
+                      to="/myOrders"
+                      onClick={handleLinkClick}
+                    >
+                      📦 Orders
+                    </Dropdown.Item>
                     {user.email === "srinataraj1521@gmail.com" && (
-                      <Dropdown.Item as={Link} to="/adminPage" onClick={handleLinkClick}>👨‍💼 Admin Page</Dropdown.Item>
+                      <Dropdown.Item
+                        as={Link}
+                        to="/adminPage"
+                        onClick={handleLinkClick}
+                      >
+                        👨‍💼 Admin Page
+                      </Dropdown.Item>
                     )}
                     <Dropdown.Divider />
-                    <Dropdown.Item onClick={() => { handleLogout(); handleLinkClick(); }}>🚪 Logout</Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => {
+                        handleLogout();
+                        handleLinkClick();
+                      }}
+                    >
+                      🚪 Logout
+                    </Dropdown.Item>
                   </>
                 )}
               </Dropdown.Menu>
