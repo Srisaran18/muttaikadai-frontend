@@ -38,7 +38,7 @@ const Login = () => {
     if (!isValid) return;
 
     try {
-      const response = await fetch(`${API_URL}/login`, {
+      const response = await fetch(`${API_URL}/api/users/Login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -46,21 +46,28 @@ const Login = () => {
         body: JSON.stringify({ email, password })
       });
 
-      const result = await response.json();
+      const contentType = response.headers.get("content-type") || "";
+      let result;
+      try {
+        result = contentType.includes("application/json")
+          ? await response.json()
+          : await response.text();
+      } catch (e) {
+        result = await response.text().catch(() => "");
+      }
+
       console.log("Complete login response:", {
         status: response.status,
         ok: response.ok,
-        result,
-        hasToken: !!result.token,
-        hasUsername: !!result.username,
-        hasEmail: !!result.email,
-        resultKeys: Object.keys(result)
+        raw: result,
+        contentType
       });
 
-      if (response.ok && result.token) {
+      if (response.ok && typeof result === "object" && result.token) {
         const userData = {
           username: result.username,
-          email: result.email
+          email: result.email,
+          role: result.role
         };
         console.log("Setting user data:", userData);
         console.log("User data validation:", {
@@ -78,7 +85,8 @@ const Login = () => {
         alert("Login successful!");
         navigate("/home");
       } else {
-        alert(result.message || "Login failed");
+        const message = typeof result === "object" ? result.message : result;
+        alert(message || `Login failed (status ${response.status})`);
       }
     } catch (err) {
       console.error("Server error:", err);

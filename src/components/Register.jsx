@@ -66,13 +66,13 @@ const Register = () => {
 
     if (isValid) {
       const userData = {
-        username,
-        email,
-        password,
-        phoneNumber
+        name: username,
+        email: email,
+        password: password,
+        mobile: phoneNumber
       };
       try {
-        const response = await fetch(`${API_URL}/register`, {
+        const response = await fetch(`${API_URL}/api/users/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(userData)

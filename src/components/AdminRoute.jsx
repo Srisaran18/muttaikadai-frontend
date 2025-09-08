@@ -9,7 +9,7 @@ const AdminRoute = ({ children }) => {
     return <div>Loading...</div>;
   }
 
-  if (!user || user.email !== "srinataraj1521@gmail.com") {
+  if (!user || user.role !== "admin") {
     return <Navigate to="/home" />;
   }
 

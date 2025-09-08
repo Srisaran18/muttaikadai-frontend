@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
+import API_URL from "../../Config";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Required for Carousel functionality
 import bannerImage1 from "../../assets/images/banner.jpg"; // Add your image to src/assets/banner.jpg
@@ -8,107 +9,28 @@ import product1 from "../../assets/images/products/product1.jpg";
 import product2 from "../../assets/images/products/product2.jpg";
 import product3 from "../../assets/images/products/product3.jpg";
 import product4 from "../../assets/images/products/product4.jpg";
-import incubator from "../../assets/images/incubator.png";
-import heater from "../../assets/images/heater.png";
-import eggBoiler from "../../assets/images/eggboiler.png";
 import quality from "../../assets/images/quality.jpg";
 import "../../assets/css/custom.css";
+import { Link } from "react-router-dom";
 
 const Home = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState({});
-  const [showAlert, setShowAlert] = useState(false);
+  const [products, setProducts] = useState([]);
 
-  const validateForm = () => {
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[0-9]{10}$/;
-    let hasErrors = false;
 
-    if (!name.trim()) {
-      newErrors.name = "Name is required";
-      hasErrors = true;
-    }
-
-    if (!email.trim()) {
-      newErrors.email = "Email is required";
-      hasErrors = true;
-    } else if (!emailRegex.test(email)) {
-      newErrors.email = "Please enter a valid email";
-      hasErrors = true;
-    }
-
-    if (!phone.trim()) {
-      newErrors.phone = "Phone number is required";
-      hasErrors = true;
-    } else if (!phoneRegex.test(phone)) {
-      newErrors.phone = "Please enter a valid 10-digit phone number";
-      hasErrors = true;
-    }
-
-    if (!message.trim()) {
-      newErrors.message = "Message is required";
-      hasErrors = true;
-    }
-
-    setErrors(newErrors);
-
-    if (hasErrors) {
-      setShowAlert(true);
-      // Hide alert after 3 seconds
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    }
-
-    return !hasErrors;
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    const userData = {
-      name,
-      email,
-      phone,
-      message
-    };
-
-    try {
-      const response = await fetch("http://localhost:5000/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(userData)
-      });
-
-      const result = await response.json();
-      console.log("Contact us result : ", result);
-
-      if (response.ok) {
-        alert("Message sent successfully");
-        // Reset form fields
-        setName("");
-        setEmail("");
-        setPhone("");
-        setMessage("");
-        setErrors({});
-      } else {
-        alert("Error: " + result.message);
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/products`);
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load products");
       }
-    } catch (err) {
-      console.error("Server error:", err);
-      alert("Server error. Please try again later.");
-    }
-  };
+    };
+    load();
+  }, []);
+
 
   return (
     <main>
@@ -240,84 +162,37 @@ const Home = () => {
       </section>
 
       {/* Product Cards */}
+
       <div className="container my-5" id="promo">
         <div className="row text-center g-4">
           <h2>Our Products</h2>
-          <div className="col-md-3">
-            <a href="#products" className="text-decoration-none">
-              <div
-                className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
-                style={{ height: "300px" }}
-              >
-                <img
-                  src={product1}
-                  alt="Incubator"
-                  className="img-fluid w-100"
-                  style={{ height: "80%", objectFit: "cover" }}
-                />
-                <div className="p-2">
-                  <h5 className="mb-0 text-dark">Quails (kaadai)</h5>
-                </div>
-              </div>
-            </a>
-          </div>
 
-          <div className="col-md-3">
-            <a href="#products" className="text-decoration-none">
-              <div
-                className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
-                style={{ height: "300px" }}
-              >
-                <img
-                  src={product2}
-                  alt="Incubator"
-                  className="img-fluid w-100"
-                  style={{ height: "80%", objectFit: "cover" }}
-                />
-                <div className="p-2">
-                  <h5 className="mb-0 text-dark">Broiler Eggs</h5>
-                </div>
+          {products.length === 0 ? (
+            <p className="text-muted">No products available.</p>
+          ) : (
+            products.map((product) => (
+              <div className="col-md-3" key={product._id}>
+                <Link key={product._id} to={`/products/${product._id}`}>
+                  <a href="#products" className="text-decoration-none">
+                    <div
+                      className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
+                      style={{ height: "300px" }}
+                    >
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="img-fluid w-100"
+                        style={{ height: "80%", objectFit: "cover" }}
+                      />
+                      <div className="p-2">
+                        <h5 className="mb-0 text-dark">{product.name}</h5>
+                      </div>
+                    </div>
+                  </a>
+                </Link>
               </div>
-            </a>
-          </div>
-
-          <div className="col-md-3">
-            <a href="#services" className="text-decoration-none">
-              <div
-                className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
-                style={{ height: "300px" }}
-              >
-                <img
-                  src={product3}
-                  alt="Heater"
-                  className="img-fluid w-100"
-                  style={{ height: "80%", objectFit: "cover" }}
-                />
-                <div className="p-2">
-                  <h5 className="mb-0 text-dark">Country chicken Eggs</h5>
-                </div>
-              </div>
-            </a>
-          </div>
-
-          <div className="col-md-3">
-            <a href="#delivery" className="text-decoration-none">
-              <div
-                className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
-                style={{ height: "300px" }}
-              >
-                <img
-                  src={product4}
-                  alt="Egg Boiler"
-                  className="img-fluid w-100"
-                  style={{ height: "80%", objectFit: "cover" }}
-                />
-                <div className="p-2">
-                  <h5 className="mb-0 text-dark">Country Chicken</h5>
-                </div>
-              </div>
-            </a>
-          </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -369,7 +244,6 @@ const Home = () => {
       <section className="services py-5" id="services">
         <div className="container">
           <div className="text-center services-title mb-5">
-            
             <h2>Explore Our Services</h2>
           </div>
           <div className="row justify-content-center">

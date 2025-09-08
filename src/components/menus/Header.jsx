@@ -200,7 +200,7 @@ const Header = () => {
                     >
                       📦 Orders
                     </Dropdown.Item>
-                    {user.email === "srinataraj1521@gmail.com" && (
+                    {user.role === "admin" && (
                       <Dropdown.Item
                         as={Link}
                         to="/adminPage"

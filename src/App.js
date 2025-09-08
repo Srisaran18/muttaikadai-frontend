@@ -19,24 +19,27 @@ import Orders from "./components/admin/Orders";
 import ContactMessages from "./components/admin/ContactMessages";
 import MyOrders from "./components/pages/MyOrders";
 import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 import Header from "./components/menus/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import ManageUsers from "./components/admin/ManageUsers";
 import SalesGraph from "./components/admin/SalesGraph";
 import Products from "./components/pages/Products";
+import ManageProducts from "./components/admin/ManageProducts";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
+        <CartProvider>
         <div className="App">
           <Header />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/products" element={<Products />} />
+            <Route path="/products/:id" element={<Products />} />
             {/* <Route path="/home" element={<Test />} /> */}
             <Route
               path="/cart"
@@ -49,9 +52,9 @@ function App() {
             <Route
               path="/userProfile"
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <UserProfile />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
             <Route
@@ -95,6 +98,14 @@ function App() {
               }
             />
             <Route
+              path="/admin/manage-products"
+              element={
+                <AdminRoute>
+                  <ManageProducts />
+                </AdminRoute>
+              }
+            />
+            <Route
               path="/admin/salesGraph"
               element={
                 <AdminRoute>
@@ -105,6 +116,7 @@ function App() {
             <Route path="/" element={<Navigate to="/home" />} />
           </Routes>
         </div>
+        </CartProvider>
       </AuthProvider>
     </Router>
   );
