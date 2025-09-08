@@ -1,18 +1,161 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import API_URL from "../../Config";
 
 const Cart = () => {
-  // adjust names to match your context
   const { items: cart, updateItemQuantity, removeItemByIndex } = useCart();
 
+  const [userDetails, setUserDetails] = useState(null);
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [billingSameAsDelivery, setBillingSameAsDelivery] = useState(true);
+  const [billingAddress, setBillingAddress] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+  const [orderLoading, setOrderLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
+  // Calculate cart totals
   const getItemUnitPrice = (item) =>
-    item.quantity >= item.bulkQuantity ? item.bulkPrice : item.price;
+    item.quantity >= (item.bulkQuantity || 100) ? item.bulkPrice : item.price;
 
   const getItemTotal = (item) => getItemUnitPrice(item) * item.quantity;
 
   const subtotal =
     cart?.reduce((sum, item) => sum + getItemTotal(item), 0) || 0;
+
+  const totalEggs =
+    cart?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+
+  // Fetch user profile + addresses
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const response = await fetch(`${API_URL}/api/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          setUserDetails({
+            username: result.name || result.username,
+            email: result.email,
+            phone: result.mobile || result.phone,
+          });
+          setAddresses(result.addresses || []);
+          const defaultAddress = (result.addresses || []).find((addr) => addr.isDefault);
+          if (defaultAddress) {
+            setSelectedAddress(defaultAddress);
+            setBillingAddress(defaultAddress);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching user details:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+  const handleAddressSelect = (address) => {
+    setSelectedAddress(address);
+    if (billingSameAsDelivery) {
+      setBillingAddress(address);
+    }
+  };
+
+  const handleBillingSelect = (address) => setBillingAddress(address);
+
+  const handleBillingToggle = () => {
+    setBillingSameAsDelivery((prev) => {
+      const newVal = !prev;
+      if (newVal && selectedAddress) {
+        setBillingAddress(selectedAddress);
+      } else if (!newVal && addresses.length > 0) {
+        setBillingAddress(null);
+      }
+      return newVal;
+    });
+  };
+
+  const handleProceedToPay = async () => {
+    if (!selectedAddress) return alert("Please select a delivery address");
+    if (!billingSameAsDelivery && !billingAddress)
+      return alert("Please select a billing address");
+
+    setOrderLoading(true);
+    const now = new Date();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          items: cart.map((item) => ({
+            productId: item._id,
+            name: item.name,
+            type: item.type,
+            unitPrice: getItemUnitPrice(item),
+            quantity: item.quantity,
+            image: item.image,
+          })),
+          deliveryAddress: {
+            label: selectedAddress.label,
+            line1: selectedAddress.line1,
+            line2: selectedAddress.line2 || "",
+            city: selectedAddress.city,
+            state: selectedAddress.state,
+            postalCode: selectedAddress.postalCode,
+            country: selectedAddress.country,
+          },
+          billingAddress: billingSameAsDelivery
+            ? {
+                label: selectedAddress.label,
+                line1: selectedAddress.line1,
+                line2: selectedAddress.line2 || "",
+                city: selectedAddress.city,
+                state: selectedAddress.state,
+                postalCode: selectedAddress.postalCode,
+                country: selectedAddress.country,
+              }
+            : {
+                label: billingAddress.label,
+                line1: billingAddress.line1,
+                line2: billingAddress.line2 || "",
+                city: billingAddress.city,
+                state: billingAddress.state,
+                postalCode: billingAddress.postalCode,
+                country: billingAddress.country,
+              },
+        }),
+      });
+
+      if (response.ok) {
+        alert("Order placed successfully!");
+        setShowModal(false);
+        navigate("/myOrders", { replace: true });
+      } else {
+        const error = await response.text();
+        alert("Failed to place order: " + error);
+      }
+    } catch (err) {
+      console.error("Order error:", err);
+      alert("Error placing order. Try again.");
+    } finally {
+      setOrderLoading(false);
+    }
+  };
 
   return (
     <div className="container my-5">
@@ -27,11 +170,9 @@ const Cart = () => {
             <div className="list-group">
               {cart.map((item, index) => (
                 <div
-                  key={item._id}
+                  key={item._id || index}
                   className="list-group-item d-flex justify-content-between align-items-center py-3"
                 >
-                  <input type="checkbox" className="form-check-input me-3" />
-
                   <img
                     src={item.image || "https://via.placeholder.com/80"}
                     alt={item.name}
@@ -79,15 +220,6 @@ const Cart = () => {
               ))}
             </div>
           )}
-
-          {cart && cart.length > 0 && (
-            <div className="d-flex justify-content-between mt-4">
-              <button className="btn btn-outline-primary">
-                Continue Shopping
-              </button>
-              <button className="btn btn-outline-secondary">Update Cart</button>
-            </div>
-          )}
         </div>
 
         {/* Right: Cart Summary */}
@@ -100,26 +232,6 @@ const Cart = () => {
               <span>₹{subtotal}</span>
             </div>
 
-            <div className="mb-2 d-flex justify-content-between">
-              <span>
-                Coupon Discount{" "}
-                <a href="/" className="text-primary">
-                  Apply Coupon
-                </a>
-              </span>
-              <span>₹0</span>
-            </div>
-
-            <div className="mb-2 d-flex justify-content-between">
-              <span>Delivery Charges</span>
-              <span>₹0</span>
-            </div>
-
-            <div className="mb-2 d-flex justify-content-between">
-              <span>Tax</span>
-              <span>₹0</span>
-            </div>
-
             <hr />
 
             <div className="d-flex justify-content-between fw-bold">
@@ -127,12 +239,147 @@ const Cart = () => {
               <span>₹{subtotal}</span>
             </div>
 
-            <button className="btn btn-dark w-100 mt-3">
+            <button
+              className="btn btn-dark w-100 mt-3"
+              onClick={() => setShowModal(true)}
+              disabled={!cart || cart.length === 0}
+            >
               Proceed To Checkout
             </button>
           </div>
         </div>
       </div>
+
+      {/* Checkout Modal */}
+      {showModal && (
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Order Summary</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowModal(false)}
+                  aria-label="Close"
+                />
+              </div>
+              <div className="modal-body">
+                {/* Order + User Info */}
+                <div className="row mb-4">
+                  <div className="col-md-6">
+                    <h6>Order Details</h6>
+                    <p>Total eggs: {totalEggs}</p>
+                    <p>Total: ₹{subtotal}</p>
+                  </div>
+                  <div className="col-md-6">
+                    <h6>User Details</h6>
+                    <p>Name: {userDetails?.username}</p>
+                    <p>Email: {userDetails?.email}</p>
+                    <p>Phone: {userDetails?.phone}</p>
+                  </div>
+                </div>
+
+                {/* Address Selection */}
+                <div className="mb-3">
+                  <h6>Select Delivery Address</h6>
+                  {addresses.length ? (
+                    addresses.map((addr, idx) => (
+                      <div
+                        className={`card mb-2 ${
+                          selectedAddress === addr ? "border-primary" : ""
+                        }`}
+                        key={idx}
+                      >
+                        <div className="card-body">
+                          <input
+                            type="radio"
+                            name="delivery"
+                            checked={selectedAddress === addr}
+                            onChange={() => handleAddressSelect(addr)}
+                          />
+                          <span className="ms-2">
+                            {addr.name},{addr.number}, {addr.houseNo},{" "}
+                            {addr.street}, {addr.district}, {addr.state},{" "}
+                            {addr.pincode}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>
+                      No addresses found.{" "}
+                      <Link to="/userProfile">Add address</Link>
+                    </p>
+                  )}
+                </div>
+
+                {/* Billing Address */}
+                <div className="mb-3">
+                  <h6>Billing Address</h6>
+                  <div className="form-check mb-2">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={billingSameAsDelivery}
+                      onChange={handleBillingToggle}
+                    />
+                    <label className="form-check-label">
+                      Billing same as delivery
+                    </label>
+                  </div>
+                  {!billingSameAsDelivery && (
+                    <>
+                      <p>Select a different billing address:</p>
+                      {addresses.map((addr, idx) => (
+                        <div
+                          className={`card mb-2 ${
+                            billingAddress === addr ? "border-success" : ""
+                          }`}
+                          key={`bill-${idx}`}
+                        >
+                          <div className="card-body">
+                            <input
+                              type="radio"
+                              name="billing"
+                              checked={billingAddress === addr}
+                              onChange={() => handleBillingSelect(addr)}
+                            />
+                            <span className="ms-2">
+                              {addr.name}, {addr.number}, {addr.houseNo},{" "}
+                              {addr.street}, {addr.district}, {addr.state},{" "}
+                              {addr.pincode}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-success"
+                  onClick={handleProceedToPay}
+                  disabled={orderLoading}
+                >
+                  {orderLoading ? "Processing..." : "Proceed to pay"}
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -16,7 +16,7 @@ const Orders = () => {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`${API_URL}/admin/orders`, {
+      const response = await fetch(`${API_URL}/api/orders/admin`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -73,7 +73,7 @@ const Orders = () => {
       }
 
       const response = await fetch(
-        `${API_URL}/admin/orders/${orderId}/status`,
+        `${API_URL}/api/orders/admin/${orderId}/status`,
         {
           method: "PUT",
           headers: {
@@ -140,9 +140,8 @@ const Orders = () => {
                 <tr>
                   <th>S no:</th>
                   <th>Order ID</th>
-                  <th>User Name</th>
-                  <th>Product ID</th>
-                  <th>Quantity</th>
+                  <th>User</th>
+                  <th>Items</th>
                   <th>Total Price</th>
                   <th>Order Date</th>
                   <th>Delivery Address</th>
@@ -160,29 +159,28 @@ const Orders = () => {
                       {order._id}
                     </td>
                     <td>
-                      {order.username}
+                      {order.user?.name || "-"} ({order.user?.email || "-"})
                     </td>
                     <td>
-                      {order.productID}
-                    </td>
-                    <td>
-                      {order.totalEggs}
+                      {order.items?.map((it, i) => (
+                        <div key={i}>
+                          {it.name} × {it.quantity} @ ₹{it.unitPrice}
+                        </div>
+                      ))}
                     </td>
                     <td>
                       ₹{order.totalPrice}
                     </td>
                     <td>
-                      {new Date(order.orderDate).toLocaleDateString()}
+                      {new Date(order.orderDate || order.createdAt).toLocaleDateString()}
                     </td>
                     <td>
                       {order.deliveryAddress &&
                         <div>
-                          {order.deliveryAddress.name},{" "}
-                          {order.deliveryAddress.houseNo},{" "}
-                          {order.deliveryAddress.street},<br />
-                          {order.deliveryAddress.district},{" "}
-                          {order.deliveryAddress.state},{" "}
-                          {order.deliveryAddress.pincode}
+                          {order.deliveryAddress.line1}
+                          {order.deliveryAddress.line2 ? `, ${order.deliveryAddress.line2}` : ""}
+                          <br />
+                          {order.deliveryAddress.city}, {order.deliveryAddress.state}, {order.deliveryAddress.postalCode}
                         </div>}
                     </td>
                     <td>

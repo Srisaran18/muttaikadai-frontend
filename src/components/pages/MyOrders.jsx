@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import API_URL from "../../Config";
 
 const MyOrders = () => {
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ const MyOrders = () => {
         return;
       }
       try {
-        const response = await fetch("http://localhost:5000/orders", {
+        const response = await fetch(`${API_URL}/api/orders/mine`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -76,65 +77,75 @@ const MyOrders = () => {
   return (
     <div className="container my-5">
       <h2 className="mb-4">My Orders</h2>
-      {orders.length > 0
-        ? <div className="table-responsive">
-            <table className="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>S no:</th>
-                  <th>Order Date</th>
-                  <th>Total Eggs</th>
-                  <th>Total Price</th>
-                  <th>Status</th>
-                  <th>More details</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order, index) =>
-                  <tr key={order._id || index}>
-                    <td>
-                      {index + 1}
-                    </td>
-                    <td>
-                      {new Date(order.orderDate).toLocaleDateString()}
-                    </td>
-                    <td>
-                      {order.totalEggs}
-                    </td>
-                    <td>
-                      ₹{order.totalPrice}
-                    </td>
-                    <td>
-                      <span
-                        className={`badge bg-${order.status === "pending"
+      {orders.length > 0 ? (
+        <div className="table-responsive">
+          <table className="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>S no:</th>
+                <th>Order ID</th>
+                <th>Items</th>
+                <th>Total Price</th>
+                <th>Order Date</th>
+                <th>Delivery Address</th>
+                <th>Status</th>
+                <th>More details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((order, index) => (
+                <tr key={order._id || index}>
+                  <td>{index + 1}</td>
+                  <td>{order._id}</td>
+                  <td>
+                    {order.items?.map((it, i) => (
+                      <div key={i}>
+                        {it.name} × {it.quantity} @ ₹{it.unitPrice}
+                      </div>
+                    ))}
+                  </td>
+                  <td>₹{order.totalPrice}</td>
+                  <td>{new Date(order.orderDate || order.createdAt).toLocaleDateString()}</td>
+                  <td>
+                    {order.deliveryAddress && (
+                      <div>
+                        {order.deliveryAddress.line1}
+                        {order.deliveryAddress.line2 ? `, ${order.deliveryAddress.line2}` : ""}
+                        <br />
+                        {order.deliveryAddress.city}, {order.deliveryAddress.state}, {order.deliveryAddress.postalCode}
+                      </div>
+                    )}
+                  </td>
+                  <td>
+                    <span
+                      className={`badge bg-${
+                        order.status === "pending"
                           ? "warning"
                           : order.status === "processing"
-                            ? "info"
-                            : order.status === "shipped"
-                              ? "primary"
-                              : order.status === "delivered"
-                                ? "success"
-                                : "secondary"}`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => handleViewOrder(order)}
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        : <div className="alert alert-info">
-            You haven't placed any orders yet.
-          </div>}
+                          ? "info"
+                          : order.status === "shipped"
+                          ? "primary"
+                          : order.status === "delivered"
+                          ? "success"
+                          : "secondary"
+                      }`}
+                    >
+                      {order.status}
+                    </span>
+                  </td>
+                  <td>
+                    <button className="btn btn-primary" onClick={() => handleViewOrder(order)}>
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="alert alert-info">You haven't placed any orders yet.</div>
+      )}
 
       {/* Modal for Order Details */}
       {showModal &&
@@ -159,57 +170,46 @@ const MyOrders = () => {
                 <div className="row mb-4">
                   <div className="col-md-6">
                     <h6>Order Details</h6>
-                    <p>
-                      Product ID: {selectedOrder.productID}
-                    </p>
-                    <p>
-                      Total eggs: {selectedOrder.totalEggs}
-                    </p>
-                    <p>
-                      Total: ₹{selectedOrder.totalPrice}
-                    </p>
-                    <p>
-                      Status: {selectedOrder.status}
-                    </p>
+                    <div className="mb-2">
+                      {selectedOrder.items?.map((it, i) => (
+                        <div key={i}>
+                          {it.name} × {it.quantity} @ ₹{it.unitPrice}
+                        </div>
+                      ))}
+                    </div>
+                    <p>Total: ₹{selectedOrder.totalPrice}</p>
+                    <p>Status: {selectedOrder.status}</p>
                   </div>
                   <div className="col-md-6">
                     <h6>User Details</h6>
-                    <p>
-                      Name: {selectedOrder.username}
-                    </p>
-                    <p>
-                      Email: {selectedOrder.email}
-                    </p>
-                    <p>
-                      Phone: {selectedOrder.phoneNumber}
-                    </p>
+                    <p>Name: {selectedOrder.user?.name || ""}</p>
+                    <p>Email: {selectedOrder.user?.email || ""}</p>
+                    <p>Phone: {selectedOrder.user?.mobile || ""}</p>
                   </div>
                 </div>
 
                 <div className="mb-3">
                   <h6>Delivery Address</h6>
-                  {selectedOrder.deliveryAddress &&
+                  {selectedOrder.deliveryAddress && (
                     <div>
-                      {selectedOrder.deliveryAddress.name}, {" "}
-                      {selectedOrder.deliveryAddress.houseNo}, {" "}
-                      {selectedOrder.deliveryAddress.street},<br />
-                      {selectedOrder.deliveryAddress.district}, {" "}
-                      {selectedOrder.deliveryAddress.state}, {" "}
-                      {selectedOrder.deliveryAddress.pincode}
-                    </div>}
+                      {selectedOrder.deliveryAddress.line1}
+                      {selectedOrder.deliveryAddress.line2 ? `, ${selectedOrder.deliveryAddress.line2}` : ""}
+                      <br />
+                      {selectedOrder.deliveryAddress.city}, {selectedOrder.deliveryAddress.state}, {selectedOrder.deliveryAddress.postalCode}
+                    </div>
+                  )}
                 </div>
 
                 <div className="mb-3">
                   <h6>Billing Address</h6>
-                  {selectedOrder.billingAddress &&
+                  {selectedOrder.billingAddress && (
                     <div>
-                      {selectedOrder.billingAddress.name}, {" "}
-                      {selectedOrder.billingAddress.houseNo}, {" "}
-                      {selectedOrder.billingAddress.street},<br />
-                      {selectedOrder.billingAddress.district}, {" "}
-                      {selectedOrder.billingAddress.state}, {" "}
-                      {selectedOrder.billingAddress.pincode}
-                    </div>}
+                      {selectedOrder.billingAddress.line1}
+                      {selectedOrder.billingAddress.line2 ? `, ${selectedOrder.billingAddress.line2}` : ""}
+                      <br />
+                      {selectedOrder.billingAddress.city}, {selectedOrder.billingAddress.state}, {selectedOrder.billingAddress.postalCode}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="modal-footer">
