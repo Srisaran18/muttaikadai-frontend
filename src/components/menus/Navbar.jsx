@@ -1,114 +1,169 @@
 import React from "react";
-import { FaUser, FaShoppingBag, FaSearch } from "react-icons/fa";
+import logo from "../../assets/images/logo/mainlogo.png";
 
 const Navbar = () => {
   return (
-    <header className="shadow-sm bg-white sticky top-0 z-50">
-      {/* Top banner */}
-      <div className="bg-green-700 text-white text-center py-1 text-sm">
-        🚛 Enjoy Free Shipping on Orders Over ₹999! ✨
-      </div>
-
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-8 py-3">
-        {/* Left: Logo */}
-        <div className="flex items-center">
-          <a href="/" className="text-2xl font-bold text-red-700">
-            EARTHY <span className="text-orange-500">ORIGINS</span>
-          </a>
-          <span className="text-xs block -mt-1 ml-1 text-gray-500">
-            ORGANIC FARM
-          </span>
-        </div>
-
-        {/* Center: Menu */}
-        <ul className="hidden md:flex space-x-6 font-medium text-gray-800">
-          <li>
-            <a href="/" className="hover:text-green-600">
-              HOME
+    <nav className="nav-box ">
+      <div className="container">
+       <div className="top-nav">
+          <div className="logo">
+          <a href="01_home.html">
+              <img
+                className="img-fluid"
+                src={logo}
+                alt="01 Logo"
+              />
+            </a> 
+            <a href="#open-nav-bar-menu" className="open-nav-bar">
+              <span></span>
+              <span></span>
+              <span></span>
             </a>
-          </li>
-          <li className="relative group">
-            <button className="hover:text-green-600 flex items-center">
-              SHOP
-              <span className="ml-1">▾</span>
-            </button>
-            {/* Dropdown */}
-            <ul className="absolute hidden group-hover:block bg-white shadow-lg mt-2 rounded">
+          </div>
+
+          <div className="nav-info">
+            <div className="box">
+              <div className="info">
+              <i className="flaticon-emergency-call"></i>
+                <ul className="text-info">
+                  <li>
+                    <a href="#">
+                      <span>Phone : </span>+(91) 9663460555
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <span>Email : </span>sales@muttaikadai.com
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            <a href="01_appointment.html" className="btn-1">
+                Login 
+              </a>
+            </div>
+          </div>
+        </div> 
+
+        <div className="nav-bar" id="open-nav-bar-menu">
+          <div className="box">
+            {/* Main Navigation */}
+            <ul className="level-1">
+              <li className="">
+                <a href="#" className="color-active">
+                  Home
+                </a>
+              </li>
+
+              <li className="">
+                <a href="#">About Us</a>
+              </li>
+
+              <li className="">
+                <a href="#">Services</a>
+              </li>
+
+              <li className="has-menu">
+                <a href="#">Our Products</a>
+                <ul className="level-2">
+                  <li>
+                    <a href="01_departments.html">Retail Eggs</a>
+                  </li>
+                  <li>
+                    <a href="02_departments.html">Wholesale Eggs</a>
+                  </li>
+                  <li>
+                    <a href="03_departments.html">Chicks</a>
+                  </li>
+                </ul>
+              </li>
+
+              <li className="">
+                <a href="#">Contact Us</a>
+              </li>
+
+              <li className="">
+                <a href="#">Blog</a>
+              </li>
+
+              <li className="has-menu">
+                <a href="#">Shop</a>
+                <ul className="level-2">
+                  <li>
+                    <a href="01_shop.html">Products</a>
+                  </li>
+                </ul>
+              </li>
+
+              
+            </ul>
+
+            {/* Social Icons + Cart */}
+            <ul className="level-1">
               <li>
-                <a
-                  href="/pages/our-meat"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                >
-                  Our Meat
+                <a href="#">
+                  <i className="fab fa-facebook-f"></i>
                 </a>
               </li>
               <li>
-                <a
-                  href="/pages/broth"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                >
-                  Broth
+                <a href="#">
+                  <i className="fab fa-linkedin-in"></i>
                 </a>
               </li>
               <li>
-                <a
-                  href="/pages/farm-produce"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                >
-                  Farm Produce
+                <a href="#">
+                  <i className="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li className="cart">
+                <a href="#">
+                  <i className="fas fa-shopping-cart"></i>
+                </a>
+                <div className="cart-popup">
+                  <div className="item">
+                    <img
+                      className="img-fluid"
+                      src="assets/images/shop/01_shop.jpg"
+                      alt="01 Shop"
+                    />
+                    <div className="item-content">
+                      <div>Mismo Briefcase</div>
+                      <span>2 x $ 38.00</span>
+                    </div>
+                    <span className="delete-item">x</span>
+                  </div>
+                  <div className="item">
+                    <img
+                      className="img-fluid"
+                      src="assets/images/shop/02_shop.jpg"
+                      alt="02 Shop"
+                    />
+                    <div className="item-content">
+                      <div>Brown Leather</div>
+                      <span>1 x $ 28.00</span>
+                    </div>
+                    <span className="delete-item">x</span>
+                  </div>
+                  <div className="subtotal">
+                    <span>Subtotal:</span>
+                    <span>$ 88.00</span>
+                  </div>
+                  <div className="button-cart">
+                    <button className="btn-1">View Cart</button>
+                    <button className="btn-3">Checkout</button>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <a href="#" className="open-search">
+                  <i className="fas fa-search"></i>
                 </a>
               </li>
             </ul>
-          </li>
-          <li>
-            <a href="/pages/broth" className="hover:text-green-600">
-              BROTH
-            </a>
-          </li>
-          <li>
-            <a href="/pages/coffee" className="hover:text-green-600">
-              ORGANIC ARABICA COFFEE
-            </a>
-          </li>
-          <li>
-            <a href="/pages/farm-produce" className="hover:text-green-600">
-              FARM PRODUCE
-            </a>
-          </li>
-          <li>
-            <a href="/pages/build-bar" className="hover:text-green-600">
-              BUILD YOUR BAR{" "}
-              <span className="ml-1 text-xs bg-orange-500 text-white px-1 rounded">
-                INDIA'S FIRST
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="/pages/our-farm" className="hover:text-green-600">
-              OUR FARM
-            </a>
-          </li>
-          <li>
-            <a href="/pages/about" className="hover:text-green-600">
-              ABOUT
-            </a>
-          </li>
-        </ul>
-
-        {/* Right: Icons */}
-        <div className="flex items-center space-x-4 text-gray-700 text-lg">
-          <FaSearch className="cursor-pointer hover:text-green-600" />
-          <FaUser className="cursor-pointer hover:text-green-600" />
-          <div className="relative">
-            <FaShoppingBag className="cursor-pointer hover:text-green-600" />
-            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-              1
-            </span>
           </div>
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
   );
 };
 
