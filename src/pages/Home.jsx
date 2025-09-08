@@ -28,7 +28,7 @@ const Home = () => {
                 <div className="overlay"></div>
                 <div className="container">
                   <div className="row">
-                    <div className="col-lg-6">
+                    <div className="col-lg-12">
                       <div className="banner">
                         <div className="top-handline">Fresh from the Farm</div>
                         <h1 className="handline">Muttaikadai Hatcheries</h1>
