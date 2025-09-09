@@ -3,18 +3,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
-import { Link, useLocation } from "react-router-dom";
-import API_URL from "../../Config";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+// import API_URL from "../../Config";
 
 const Header = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navbarRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    window.location.href = "/login";
+    navigate("/login");
   };
 
   const displayName = user?.username || "Login";
@@ -33,7 +34,7 @@ const Header = () => {
         element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      window.location.href = `/home#${sectionId}`;
+      navigate(`/home#${sectionId}`)
     }
   };
 
@@ -115,7 +116,6 @@ const Header = () => {
             <li className="nav-item">
               <a
                 className="nav-link"
-                href="#"
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("quality");
@@ -127,7 +127,6 @@ const Header = () => {
             <li className="nav-item">
               <a
                 className="nav-link"
-                href="#"
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("services");
@@ -136,10 +135,9 @@ const Header = () => {
                 Our Services
               </a>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <a
                 className="nav-link"
-                href="#"
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection("contact");
@@ -147,7 +145,7 @@ const Header = () => {
               >
                 Contact Us
               </a>
-            </li>
+            </li> */}
           </ul>
 
           {/* Right side (Cart + User dropdown) */}

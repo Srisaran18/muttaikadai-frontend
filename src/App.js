@@ -16,7 +16,7 @@ import Cart from "./components/pages/Cart";
 import UserProfile from "./components/pages/UserProfile";
 import AdminPage from "./components/admin/AdminPage";
 import Orders from "./components/admin/Orders";
-import ContactMessages from "./components/admin/ContactMessages";
+// import ContactMessages from "./components/admin/ContactMessages";
 import MyOrders from "./components/pages/MyOrders";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
@@ -24,7 +24,7 @@ import Header from "./components/menus/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import ManageUsers from "./components/admin/ManageUsers";
-import SalesGraph from "./components/admin/SalesGraph";
+// import SalesGraph from "./components/admin/SalesGraph";
 import Products from "./components/pages/Products";
 import ManageProducts from "./components/admin/ManageProducts";
 
@@ -82,14 +82,14 @@ function App() {
                 </AdminRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/admin/contacts"
               element={
                 <AdminRoute>
                   <ContactMessages />
                 </AdminRoute>
               }
-            />
+            /> */}
             <Route
               path="/admin/manageUsers"
               element={
@@ -106,14 +106,14 @@ function App() {
                 </AdminRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/admin/salesGraph"
               element={
                 <AdminRoute>
                   <SalesGraph />
                 </AdminRoute>
               }
-            />
+            /> */}
             <Route path="/" element={<Navigate to="/home" />} />
           </Routes>
         </div>

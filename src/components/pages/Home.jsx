@@ -5,10 +5,6 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Required for Carousel fun
 import bannerImage1 from "../../assets/images/banner.jpg"; // Add your image to src/assets/banner.jpg
 import bannerImage2 from "../../assets/images/banner2.jpg"; // Add your image to src/assets/banner.jpg
 import bannerImage3 from "../../assets/images/banner3.jpg"; // Add your image to src/assets/banner.jpg
-import product1 from "../../assets/images/products/product1.jpg";
-import product2 from "../../assets/images/products/product2.jpg";
-import product3 from "../../assets/images/products/product3.jpg";
-import product4 from "../../assets/images/products/product4.jpg";
 import quality from "../../assets/images/quality.jpg";
 import "../../assets/css/custom.css";
 import { Link } from "react-router-dom";
@@ -189,7 +185,7 @@ const Home = () => {
                       style={{ height: "300px" }}
                     >
                       <img
-                        src={product.image}
+                        src={`${API_URL}/${product.image}`}
                         alt={product.name}
                         className="img-fluid w-100"
                         style={{ height: "80%", objectFit: "cover" }}

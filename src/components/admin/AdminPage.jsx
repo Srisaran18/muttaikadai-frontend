@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import API_URL from "../../Config";
+// import API_URL from "../../Config";
 
 const AdminPage = () => {
   
@@ -47,7 +47,7 @@ const AdminPage = () => {
             </div>
           </div>
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <div className="card shadow-sm">
               <div className="card-body">
                 <h5 className="card-title">Contact Messages</h5>
@@ -59,9 +59,9 @@ const AdminPage = () => {
                 </Link>
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <div className="card shadow-sm">
               <div className="card-body">
                 <h5 className="card-title">Graph</h5>
@@ -71,7 +71,7 @@ const AdminPage = () => {
                 </Link>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
