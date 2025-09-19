@@ -1,0 +1,25 @@
+/* App root should fill viewport and allow footer to stick to bottom */
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content area grows to push footer down */
+.app-content {
+  flex: 1 0 auto;
+}
+
+/* Footer does not grow and stays at bottom */
+footer {
+  flex-shrink: 0;
+}
+
+/* Simple utility spinner alignment */
+.loading-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+

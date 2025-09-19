@@ -178,23 +178,21 @@ const Home = () => {
           ) : (
             products.map((product) => (
               <div className="col-md-3" key={product._id}>
-                <Link key={product._id} to={`/products/${product._id}`}>
-                  <a href="#products" className="text-decoration-none">
-                    <div
-                      className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
-                      style={{ height: "300px" }}
-                    >
-                      <img
-                        src={`${API_URL}/${product.image}`}
-                        alt={product.name}
-                        className="img-fluid w-100"
-                        style={{ height: "80%", objectFit: "cover" }}
-                      />
-                      <div className="p-2">
-                        <h5 className="mb-0 text-dark">{product.name}</h5>
-                      </div>
+                <Link key={product._id} to={`/products/${product._id}`} className="text-decoration-none">
+                  <div
+                    className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
+                    style={{ height: "300px" }}
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="img-fluid w-100"
+                      style={{ height: "80%", objectFit: "cover" }}
+                    />
+                    <div className="p-2">
+                      <h5 className="mb-0 text-dark">{product.name}</h5>
                     </div>
-                  </a>
+                  </div>
                 </Link>
               </div>
             ))
@@ -238,9 +236,9 @@ const Home = () => {
                   Trusted by thousands of families
                 </li>
               </ul>
-              <a href="#shop" className="btn btn-primary mt-3">
+              <Link to="/shop" className="btn btn-primary mt-3">
                 Visit Our Farm
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API_URL from "../../Config";
 import { useAuth } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
@@ -172,7 +173,12 @@ const ManageProducts = () => {
 
   return (
     <div className="container my-4">
-      <h2 className="mb-4">Manage Products</h2>
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <h2 className="mb-0">Manage Products</h2>
+        <Link to="/adminPage" className="btn btn-outline-secondary">
+          ← Back
+        </Link>
+      </div>
 
       {/* Product Form */}
       <div className="card p-4 mb-5">
@@ -262,7 +268,10 @@ const ManageProducts = () => {
             {formData._id ? "Update Product" : "Add Product"}
           </button>
           {formData._id && (
-            <button className="btn btn-danger" onClick={() => handleDelete(formData._id)}>
+            <button
+              className="btn btn-danger"
+              onClick={() => handleDelete(formData._id)}
+            >
               Delete Product
             </button>
           )}

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -20,24 +21,24 @@ const Footer = () => {
             <h5 className="text-primary">Quick Links</h5>
             <ul className="list">
               <li>
-                <a href="/" className="text-white text-decoration-none">
+                <Link to="/" className="text-white text-decoration-none">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/about" className="text-white text-decoration-none">
+                <Link to="/about" className="text-white text-decoration-none">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/products" className="text-white text-decoration-none">
+                <Link to="/products" className="text-white text-decoration-none">
                   Products
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/contact" className="text-white text-decoration-none">
+                <Link to="/contact" className="text-white text-decoration-none">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -56,40 +57,40 @@ const Footer = () => {
               </li>
               <li>
                 <i className="bi bi-telephone-fill me-2 text-danger"></i> +91
-                98765 43210
+                96634 60555
               </li>
             </ul>
             <div className="mt-3">
-              <a href="#" className="text-white me-3">
+              <span className="text-white me-3" role="button">
                 <i className="bi bi-facebook "></i>
-              </a>
-              <a href="#" className="text-white me-3">
+              </span>
+              <span className="text-white me-3" role="button">
                 <i className="bi bi-twitter"></i>
-              </a>
-              <a href="#" className="text-white me-3">
+              </span>
+              <span className="text-white me-3" role="button">
                 <i className="bi bi-instagram"></i>
-              </a>
-              <a href="#" className="text-white">
+              </span>
+              <span className="text-white" role="button">
                 <i className="bi bi-whatsapp"></i>
-              </a>
+              </span>
             </div>
           </div>
         </div>
 
         <hr className="border-secondary" />
         <div className="text-center text-white">
-          © {new Date().getFullYear()}{" "}
+          © {new Date().getFullYear()} {""}
           <span className="text-warning">Muttaidadai</span>. All rights
-          reserved. Developed by{" "}
+          reserved. Developed by {""}
           <span className="text-warning">YoungZen Technologies</span>
         </div>
         <div className="text-center foot-count mt-2">
           <p>
             Trusted by households for fresh country chicken eggs, quails,
             chicks, and broiler eggs.
-            <a href="/join" className="btn btn-primary btn-sm ms-2">
+            <Link to="/join" className="btn btn-primary btn-sm ms-2">
               Join us today!
-            </a>
+            </Link>
           </p>
         </div>
       </div>

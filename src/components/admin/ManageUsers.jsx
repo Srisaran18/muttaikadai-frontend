@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import API_URL from "../../Config";
+import { Link } from "react-router-dom";
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -13,7 +14,7 @@ const ManageUsers = () => {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`${API_URL}/admin/users`, {
+      const response = await fetch(`${API_URL}/api/users/admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -21,7 +22,13 @@ const ManageUsers = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setUsers(data);
+        const normalized = (data || []).map(u => ({
+          ...u,
+          username: u.name,
+          phoneNumber: u.mobile,
+          isAdmin: u.role === "admin"
+        }));
+        setUsers(normalized);
       } else {
         throw new Error("Failed to fetch users");
       }
@@ -44,7 +51,7 @@ const ManageUsers = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${API_URL}/admin/users/${userId}`,
+        `${API_URL}/api/users/admin/users/${userId}`,
         {
           method: "DELETE",
           headers: {
@@ -67,7 +74,7 @@ const ManageUsers = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${API_URL}/admin/users/${userId}/block`,
+        `${API_URL}/api/users/admin/users/${userId}/block`,
         {
           method: "PUT",
           headers: {
@@ -97,7 +104,7 @@ const ManageUsers = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${API_URL}/admin/users/${userId}/admin`,
+        `${API_URL}/api/users/admin/users/${userId}/admin`,
         {
           method: "PUT",
           headers: {
@@ -133,7 +140,12 @@ const ManageUsers = () => {
 
   return (
     <div className="container my-5">
-      <h2 className="mb-4">Manage Users</h2>
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <h2 className="mb-0">Manage Users</h2>
+        <Link to="/adminPage" className="btn btn-outline-secondary">
+          ← Back
+        </Link>
+      </div>
       <div className="table-responsive">
         <table className="table table-striped table-bordered">
           <thead>
@@ -147,31 +159,25 @@ const ManageUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map(user =>
+            {users.map((user) => (
               <tr key={user._id}>
-                <td>
-                  {user.username}
-                </td>
-                <td>
-                  {user.email}
-                </td>
-                <td>
-                  {user.phoneNumber}
-                </td>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
+                <td>{user.phoneNumber}</td>
                 <td>
                   <span
-                    className={`badge ${user.isBlocked
-                      ? "bg-danger"
-                      : "bg-success"}`}
+                    className={`badge ${
+                      user.isBlocked ? "bg-danger" : "bg-success"
+                    }`}
                   >
                     {user.isBlocked ? "Blocked" : "Active"}
                   </span>
                 </td>
                 <td>
                   <span
-                    className={`badge ${user.isAdmin
-                      ? "bg-primary"
-                      : "bg-secondary"}`}
+                    className={`badge ${
+                      user.isAdmin ? "bg-primary" : "bg-secondary"
+                    }`}
                   >
                     {user.isAdmin ? "Admin" : "User"}
                   </span>
@@ -179,18 +185,19 @@ const ManageUsers = () => {
                 <td>
                   <div className="btn-group">
                     <button
-                      className={`btn btn-sm ${user.isBlocked
-                        ? "btn-success"
-                        : "btn-warning"}`}
+                      className={`btn btn-sm ${
+                        user.isBlocked ? "btn-success" : "btn-warning"
+                      }`}
                       onClick={() =>
-                        handleToggleBlock(user._id, user.isBlocked)}
+                        handleToggleBlock(user._id, user.isBlocked)
+                      }
                     >
                       {user.isBlocked ? "Unblock" : "Block"}
                     </button>
                     <button
-                      className={`btn btn-sm ${user.isAdmin
-                        ? "btn-secondary"
-                        : "btn-primary"}`}
+                      className={`btn btn-sm ${
+                        user.isAdmin ? "btn-secondary" : "btn-primary"
+                      }`}
                       onClick={() => handleToggleAdmin(user._id, user.isAdmin)}
                     >
                       {user.isAdmin ? "Remove Admin" : "Make Admin"}
@@ -204,7 +211,7 @@ const ManageUsers = () => {
                   </div>
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>

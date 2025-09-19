@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import API_URL from "../../Config";
+import { useToast } from "../../context/ToastContext";
 
 const Cart = () => {
   const { items: cart, updateItemQuantity, removeItemByIndex } = useCart();
@@ -12,11 +13,13 @@ const Cart = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [billingSameAsDelivery, setBillingSameAsDelivery] = useState(true);
   const [billingAddress, setBillingAddress] = useState(null);
+  const [contactPhone, setContactPhone] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [orderLoading, setOrderLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
 
   // Calculate cart totals
   const getItemUnitPrice = (item) =>
@@ -49,15 +52,19 @@ const Cart = () => {
             email: result.email,
             phone: result.mobile || result.phone,
           });
+          setContactPhone(result.mobile || "");
           setAddresses(result.addresses || []);
           const defaultAddress = (result.addresses || []).find((addr) => addr.isDefault);
           if (defaultAddress) {
             setSelectedAddress(defaultAddress);
             setBillingAddress(defaultAddress);
           }
+        } else {
+          toast.error("Failed to load user details");
         }
       } catch (err) {
         console.error("Error fetching user details:", err);
+        toast.error("Error fetching user details");
       } finally {
         setLoading(false);
       }
@@ -87,12 +94,11 @@ const Cart = () => {
   };
 
   const handleProceedToPay = async () => {
-    if (!selectedAddress) return alert("Please select a delivery address");
+    if (!selectedAddress) return toast.warning("Please select a delivery address");
     if (!billingSameAsDelivery && !billingAddress)
-      return alert("Please select a billing address");
+      return toast.warning("Please select a billing address");
 
     setOrderLoading(true);
-    const now = new Date();
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/api/orders`, {
@@ -138,20 +144,21 @@ const Cart = () => {
                 postalCode: billingAddress.postalCode,
                 country: billingAddress.country,
               },
+          contactPhone,
         }),
       });
 
       if (response.ok) {
-        alert("Order placed successfully!");
+        toast.success("Order placed successfully!");
         setShowModal(false);
         navigate("/myOrders", { replace: true });
       } else {
         const error = await response.text();
-        alert("Failed to place order: " + error);
+        toast.error("Failed to place order: " + (error || "Unknown error"));
       }
     } catch (err) {
       console.error("Order error:", err);
-      alert("Error placing order. Try again.");
+      toast.error("Error placing order. Try again.");
     } finally {
       setOrderLoading(false);
     }
@@ -280,7 +287,15 @@ const Cart = () => {
                     <h6>User Details</h6>
                     <p>Name: {userDetails?.username}</p>
                     <p>Email: {userDetails?.email}</p>
-                    <p>Phone: {userDetails?.phone}</p>
+                    <div className="mb-2">
+                      <label className="form-label mb-0">Phone</label>
+                      <input
+                        className="form-control"
+                        value={contactPhone}
+                        onChange={(e) => setContactPhone(e.target.value)}
+                        placeholder="Enter contact phone"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -302,18 +317,17 @@ const Cart = () => {
                             checked={selectedAddress === addr}
                             onChange={() => handleAddressSelect(addr)}
                           />
-                          <span className="ms-2">
-                            {addr.name},{addr.number}, {addr.houseNo},{" "}
-                            {addr.street}, {addr.district}, {addr.state},{" "}
-                            {addr.pincode}
+                          <span className="ms-2 text-wrap" style={{wordBreak: "break-word", whiteSpace: "pre-wrap"}}>
+                            {addr.label ? `${addr.label}: ` : ""}{addr.line1}
+                            {addr.line2 ? `, ${addr.line2}` : ""}
+                            {`, ${addr.city}, ${addr.state}, ${addr.postalCode}, ${addr.country}`}
                           </span>
                         </div>
                       </div>
                     ))
                   ) : (
                     <p>
-                      No addresses found.{" "}
-                      <Link to="/userProfile">Add address</Link>
+                      No addresses found. <Link to="/userProfile">Add address</Link>
                     </p>
                   )}
                 </div>
@@ -349,10 +363,10 @@ const Cart = () => {
                               checked={billingAddress === addr}
                               onChange={() => handleBillingSelect(addr)}
                             />
-                            <span className="ms-2">
-                              {addr.name}, {addr.number}, {addr.houseNo},{" "}
-                              {addr.street}, {addr.district}, {addr.state},{" "}
-                              {addr.pincode}
+                            <span className="ms-2 text-wrap" style={{wordBreak: "break-word", whiteSpace: "pre-wrap"}}>
+                              {addr.label ? `${addr.label}: ` : ""}{addr.line1}
+                              {addr.line2 ? `, ${addr.line2}` : ""}
+                              {`, ${addr.city}, ${addr.state}, ${addr.postalCode}, ${addr.country}`}
                             </span>
                           </div>
                         </div>
@@ -367,7 +381,14 @@ const Cart = () => {
                   onClick={handleProceedToPay}
                   disabled={orderLoading}
                 >
-                  {orderLoading ? "Processing..." : "Proceed to pay"}
+                  {orderLoading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Processing...
+                    </>
+                  ) : (
+                    "Proceed to pay"
+                  )}
                 </button>
                 <button
                   className="btn btn-secondary"

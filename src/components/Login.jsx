@@ -3,16 +3,19 @@ import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useAuth } from "../context/AuthContext";
 import API_URL from "../Config";
+import { useToast } from "../context/ToastContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const toast = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -38,6 +41,7 @@ const Login = () => {
     if (!isValid) return;
 
     try {
+      setSubmitting(true);
       const response = await fetch(`${API_URL}/api/users/Login`, {
         method: "POST",
         headers: {
@@ -56,41 +60,28 @@ const Login = () => {
         result = await response.text().catch(() => "");
       }
 
-      console.log("Complete login response:", {
-        status: response.status,
-        ok: response.ok,
-        raw: result,
-        contentType
-      });
-
       if (response.ok && typeof result === "object" && result.token) {
         const userData = {
           username: result.username,
           email: result.email,
           role: result.role
         };
-        console.log("Setting user data:", userData);
-        console.log("User data validation:", {
-          hasUsername: !!userData.username,
-          hasEmail: !!userData.email,
-          username: userData.username,
-          email: userData.email
-        });
         login(userData, result.token);
 
         if (rememberMe) {
           localStorage.setItem("rememberMe", "true");
         }
 
-        alert("Login successful!");
+        toast.success("Login successful!");
         navigate("/home");
       } else {
         const message = typeof result === "object" ? result.message : result;
-        alert(message || `Login failed (status ${response.status})`);
+        toast.error(message || `Login failed (status ${response.status})`);
       }
     } catch (err) {
-      console.error("Server error:", err);
-      alert("Server error. Please try again later.");
+      toast.error("Server error. Please try again later.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -152,15 +143,18 @@ const Login = () => {
             </label>
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">
-            Login
+          <button type="submit" className="btn btn-primary w-100" disabled={submitting}>
+            {submitting ? (
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            ) : null}
+            {submitting ? "Signing in..." : "Login"}
           </button>
         </form>
 
         <div className="text-center mt-3">
-          <a href="#" className="small">
+          <Link to="/forgot" className="small">
             Forgot password?
-          </a>
+          </Link>
           <br />
           <span className="small">
             Don't have an account? <Link to="/register">Sign up</Link>

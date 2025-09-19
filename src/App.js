@@ -20,7 +20,9 @@ import Orders from "./components/admin/Orders";
 import MyOrders from "./components/pages/MyOrders";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { ToastProvider } from "./context/ToastContext";
 import Header from "./components/menus/Header";
+import Footer from "./components/menus/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import ManageUsers from "./components/admin/ManageUsers";
@@ -33,90 +35,95 @@ function App() {
     <Router>
       <AuthProvider>
         <CartProvider>
-        <div className="App">
-          <Header />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/products/:id" element={<Products />} />
-            <Route path="/products/" element={<Products />} />
-            {/* <Route path="/home" element={<Test />} /> */}
-            <Route
-              path="/cart"
-              element={
-                <ProtectedRoute>
-                  <Cart />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/userProfile"
-              element={
-                <ProtectedRoute>
-                  <UserProfile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/myOrders"
-              element={
-                <ProtectedRoute>
-                  <MyOrders />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/adminPage"
-              element={
-                <AdminRoute>
-                  <AdminPage />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="/admin/orders"
-              element={
-                <AdminRoute>
-                  <Orders />
-                </AdminRoute>
-              }
-            />
-            {/* <Route
-              path="/admin/contacts"
-              element={
-                <AdminRoute>
-                  <ContactMessages />
-                </AdminRoute>
-              }
-            /> */}
-            <Route
-              path="/admin/manageUsers"
-              element={
-                <AdminRoute>
-                  <ManageUsers />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="/admin/manage-products"
-              element={
-                <AdminRoute>
-                  <ManageProducts />
-                </AdminRoute>
-              }
-            />
-            {/* <Route
-              path="/admin/salesGraph"
-              element={
-                <AdminRoute>
-                  <SalesGraph />
-                </AdminRoute>
-              }
-            /> */}
-            <Route path="/" element={<Navigate to="/home" />} />
-          </Routes>
-        </div>
+          <ToastProvider>
+            <div className="App">
+              <Header />
+              <div className="app-content">
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/products/:id" element={<Products />} />
+                  <Route path="/products/" element={<Products />} />
+                  {/* <Route path="/home" element={<Test />} /> */}
+                  <Route
+                    path="/cart"
+                    element={
+                      <ProtectedRoute>
+                        <Cart />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/userProfile"
+                    element={
+                      <ProtectedRoute>
+                        <UserProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/myOrders"
+                    element={
+                      <ProtectedRoute>
+                        <MyOrders />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/adminPage"
+                    element={
+                      <AdminRoute>
+                        <AdminPage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/orders"
+                    element={
+                      <AdminRoute>
+                        <Orders />
+                      </AdminRoute>
+                    }
+                  />
+                  {/* <Route
+                    path="/admin/contacts"
+                    element={
+                      <AdminRoute>
+                        <ContactMessages />
+                      </AdminRoute>
+                    }
+                  /> */}
+                  <Route
+                    path="/admin/manageUsers"
+                    element={
+                      <AdminRoute>
+                        <ManageUsers />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/manage-products"
+                    element={
+                      <AdminRoute>
+                        <ManageProducts />
+                      </AdminRoute>
+                    }
+                  />
+                  {/* <Route
+                    path="/admin/salesGraph"
+                    element={
+                      <AdminRoute>
+                        <SalesGraph />
+                      </AdminRoute>
+                    }
+                  /> */}
+                  <Route path="/" element={<Navigate to="/home" />} />
+                </Routes>
+              </div>
+              <Footer />
+            </div>
+          </ToastProvider>
         </CartProvider>
       </AuthProvider>
     </Router>

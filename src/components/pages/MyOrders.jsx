@@ -7,6 +7,7 @@ const MyOrders = () => {
   const [error, setError] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -66,6 +67,35 @@ const MyOrders = () => {
     setSelectedOrder(null);
   };
 
+  const canCancel = status => {
+    return status === "pending" || status === "processing";
+  };
+
+  const handleCancelOrder = async orderId => {
+    try {
+      if (!window.confirm("Are you sure you want to cancel this order?")) return;
+      setCancelling(true);
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No authentication token found");
+      const response = await fetch(`${API_URL}/api/orders/mine/${orderId}/cancel`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const updated = await response.json();
+        setOrders(orders.map(o => (o._id === orderId ? updated : o)));
+        if (selectedOrder && selectedOrder._id === orderId) setSelectedOrder(updated);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to cancel order");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   if (loading) return <div className="container my-5">Loading orders...</div>;
   if (error)
     return (
@@ -118,7 +148,7 @@ const MyOrders = () => {
                   </td>
                   <td>
                     <span
-                      className={`badge bg-${
+                      className={`badge rounded-pill bg-${
                         order.status === "pending"
                           ? "warning"
                           : order.status === "processing"
@@ -127,6 +157,8 @@ const MyOrders = () => {
                           ? "primary"
                           : order.status === "delivered"
                           ? "success"
+                          : order.status === "cancelled"
+                          ? "danger"
                           : "secondary"
                       }`}
                     >
@@ -134,9 +166,20 @@ const MyOrders = () => {
                     </span>
                   </td>
                   <td>
-                    <button className="btn btn-primary" onClick={() => handleViewOrder(order)}>
-                      View
-                    </button>
+                    <div className="btn-group">
+                      <button className="btn btn-primary" onClick={() => handleViewOrder(order)}>
+                        View
+                      </button>
+                      {canCancel(order.status) && (
+                        <button
+                          className="btn btn-outline-danger"
+                          onClick={() => handleCancelOrder(order._id)}
+                          disabled={cancelling}
+                        >
+                          {cancelling ? "Cancelling..." : "Cancel"}
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -149,80 +192,91 @@ const MyOrders = () => {
 
       {/* Modal for Order Details */}
       {showModal &&
-        selectedOrder &&
-        <div
-          className="modal show d-block"
-          tabIndex="-1"
-          style={{ background: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Order Summary</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={handleCloseModal}
-                  aria-label="Close"
-                />
-              </div>
-              <div className="modal-body">
-                <div className="row mb-4">
-                  <div className="col-md-6">
-                    <h6>Order Details</h6>
-                    <div className="mb-2">
-                      {selectedOrder.items?.map((it, i) => (
-                        <div key={i}>
-                          {it.name} × {it.quantity} @ ₹{it.unitPrice}
-                        </div>
-                      ))}
+        selectedOrder && (
+          <div
+            className="modal show d-block"
+            tabIndex="-1"
+            style={{ background: "rgba(0,0,0,0.5)" }}
+          >
+            <div className="modal-dialog modal-lg">
+              <div className="modal-content border-0 shadow-lg">
+                <div className="modal-header bg-dark text-white">
+                  <h5 className="modal-title">Order Summary</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={handleCloseModal}
+                    aria-label="Close"
+                  />
+                </div>
+                <div className="modal-body">
+                  <div className="row mb-4">
+                    <div className="col-md-6">
+                      <h6 className="text-uppercase text-muted small">Order Details</h6>
+                      <div className="mb-2">
+                        {selectedOrder.items?.map((it, i) => (
+                          <div key={i}>
+                            {it.name} × {it.quantity} @ ₹{it.unitPrice}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="mb-1"><strong>Total:</strong> ₹{selectedOrder.totalPrice}</p>
+                      <p className="mb-0"><strong>Status:</strong> <span className={`badge rounded-pill bg-${
+                        selectedOrder.status === "pending"
+                          ? "warning"
+                          : selectedOrder.status === "processing"
+                          ? "info"
+                          : selectedOrder.status === "shipped"
+                          ? "primary"
+                          : selectedOrder.status === "delivered"
+                          ? "success"
+                          : selectedOrder.status === "cancelled"
+                          ? "danger"
+                          : "secondary"
+                      }`}>{selectedOrder.status}</span></p>
                     </div>
-                    <p>Total: ₹{selectedOrder.totalPrice}</p>
-                    <p>Status: {selectedOrder.status}</p>
+                    <div className="col-md-6">
+                      <h6 className="text-uppercase text-muted small">User Details</h6>
+                      <p className="mb-1"><strong>Name:</strong> {selectedOrder.user?.name || ""}</p>
+                      <p className="mb-1"><strong>Email:</strong> {selectedOrder.user?.email || ""}</p>
+                      <p className="mb-0"><strong>Phone:</strong> {selectedOrder.contactPhone || selectedOrder.user?.mobile || ""}</p>
+                    </div>
                   </div>
-                  <div className="col-md-6">
-                    <h6>User Details</h6>
-                    <p>Name: {selectedOrder.user?.name || ""}</p>
-                    <p>Email: {selectedOrder.user?.email || ""}</p>
-                    <p>Phone: {selectedOrder.user?.mobile || ""}</p>
+
+                  <div className="mb-3">
+                    <h6 className="text-uppercase text-muted small">Delivery Address</h6>
+                    {selectedOrder.deliveryAddress && (
+                      <div className="text-wrap" style={{wordBreak: "break-word", whiteSpace: "pre-wrap"}}>
+                        {selectedOrder.deliveryAddress.line1}
+                        {selectedOrder.deliveryAddress.line2 ? `, ${selectedOrder.deliveryAddress.line2}` : ""}
+                        {`, ${selectedOrder.deliveryAddress.city}, ${selectedOrder.deliveryAddress.state}, ${selectedOrder.deliveryAddress.postalCode}`}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mb-3">
+                    <h6 className="text-uppercase text-muted small">Billing Address</h6>
+                    {selectedOrder.billingAddress && (
+                      <div className="text-wrap" style={{wordBreak: "break-word", whiteSpace: "pre-wrap"}}>
+                        {selectedOrder.billingAddress.line1}
+                        {selectedOrder.billingAddress.line2 ? `, ${selectedOrder.billingAddress.line2}` : ""}
+                        {`, ${selectedOrder.billingAddress.city}, ${selectedOrder.billingAddress.state}, ${selectedOrder.billingAddress.postalCode}`}
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                <div className="mb-3">
-                  <h6>Delivery Address</h6>
-                  {selectedOrder.deliveryAddress && (
-                    <div>
-                      {selectedOrder.deliveryAddress.line1}
-                      {selectedOrder.deliveryAddress.line2 ? `, ${selectedOrder.deliveryAddress.line2}` : ""}
-                      <br />
-                      {selectedOrder.deliveryAddress.city}, {selectedOrder.deliveryAddress.state}, {selectedOrder.deliveryAddress.postalCode}
-                    </div>
-                  )}
+                <div className="modal-footer bg-light">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={handleCloseModal}
+                  >
+                    Close
+                  </button>
                 </div>
-
-                <div className="mb-3">
-                  <h6>Billing Address</h6>
-                  {selectedOrder.billingAddress && (
-                    <div>
-                      {selectedOrder.billingAddress.line1}
-                      {selectedOrder.billingAddress.line2 ? `, ${selectedOrder.billingAddress.line2}` : ""}
-                      <br />
-                      {selectedOrder.billingAddress.city}, {selectedOrder.billingAddress.state}, {selectedOrder.billingAddress.postalCode}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={handleCloseModal}
-                >
-                  Close
-                </button>
               </div>
             </div>
           </div>
-        </div>}
+        )}
     </div>
   );
 };
