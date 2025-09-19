@@ -16,17 +16,17 @@ const ManageUsers = () => {
 
       const response = await fetch(`${API_URL}/api/users/admin/users`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
         const data = await response.json();
-        const normalized = (data || []).map(u => ({
+        const normalized = (data || []).map((u) => ({
           ...u,
           username: u.name,
           phoneNumber: u.mobile,
-          isAdmin: u.role === "admin"
+          isAdmin: u.role === "admin",
         }));
         setUsers(normalized);
       } else {
@@ -43,7 +43,7 @@ const ManageUsers = () => {
     fetchUsers();
   }, []);
 
-  const handleDeleteUser = async userId => {
+  const handleDeleteUser = async (userId) => {
     if (!window.confirm("Are you sure you want to delete this user?")) {
       return;
     }
@@ -55,13 +55,13 @@ const ManageUsers = () => {
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
       if (response.ok) {
-        setUsers(users.filter(user => user._id !== userId));
+        setUsers(users.filter((user) => user._id !== userId));
       } else {
         throw new Error("Failed to delete user");
       }
@@ -79,17 +79,16 @@ const ManageUsers = () => {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ isBlocked: !isBlocked })
+          body: JSON.stringify({ isBlocked: !isBlocked }),
         }
       );
 
       if (response.ok) {
         setUsers(
-          users.map(
-            user =>
-              user._id === userId ? { ...user, isBlocked: !isBlocked } : user
+          users.map((user) =>
+            user._id === userId ? { ...user, isBlocked: !isBlocked } : user
           )
         );
       } else {
@@ -109,17 +108,16 @@ const ManageUsers = () => {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ isAdmin: !isAdmin })
+          body: JSON.stringify({ isAdmin: !isAdmin }),
         }
       );
 
       if (response.ok) {
         setUsers(
-          users.map(
-            user =>
-              user._id === userId ? { ...user, isAdmin: !isAdmin } : user
+          users.map((user) =>
+            user._id === userId ? { ...user, isAdmin: !isAdmin } : user
           )
         );
       } else {
@@ -130,13 +128,19 @@ const ManageUsers = () => {
     }
   };
 
-  if (loading) return <div className="container my-5">Loading users...</div>;
-  if (error)
+  // 🔹 Loader with spinner
+  if (loading) {
     return (
-      <div className="container my-5 text-danger">
-        Error: {error}
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
       </div>
     );
+  }
+
+  if (error)
+    return <div className="container my-5 text-danger">Error: {error}</div>;
 
   return (
     <div className="container my-5">

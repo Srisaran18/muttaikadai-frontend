@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Offcanvas, Button } from "react-bootstrap";
+import { Offcanvas, Button, Spinner } from "react-bootstrap";
 import API_URL from "../../Config";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 
 const Products = () => {
-  const { items: cart, addItem, removeItemByIndex, updateItemQuantity, total } = useCart();
+  const {
+    items: cart,
+    addItem,
+    removeItemByIndex,
+    updateItemQuantity,
+    total,
+  } = useCart();
+
   const [showCart, setShowCart] = useState(false);
   const [products, setProducts] = useState([]);
   const [selected, setSelected] = useState(null);
   const [quantity, setQuantity] = useState(0);
+  const [loading, setLoading] = useState(true); // 🔹 loading state
+  const [error, setError] = useState(null);
 
   const { id } = useParams();
 
@@ -17,7 +26,9 @@ const Products = () => {
   useEffect(() => {
     const loadProducts = async () => {
       try {
+        setLoading(true);
         const res = await fetch(`${API_URL}/api/products`);
+        if (!res.ok) throw new Error("Failed to fetch products");
         const data = await res.json();
         setProducts(data);
 
@@ -30,7 +41,9 @@ const Products = () => {
         }
       } catch (err) {
         console.error(err);
-        alert("Failed to load products");
+        setError("Failed to load products. Please try again.");
+      } finally {
+        setLoading(false);
       }
     };
     loadProducts();
@@ -54,8 +67,26 @@ const Products = () => {
         : selected.price * quantity
       : 0;
 
-  // Final total
-  // total is from shared cart context
+  // 🔹 Show loader or error
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" variant="primary" role="status" />
+        <span className="ms-2">Loading products...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-danger">
+        <h4>{error}</h4>
+        <Button variant="secondary" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-5">
@@ -204,7 +235,10 @@ const Products = () => {
                             variant="outline-secondary"
                             size="sm"
                             onClick={() =>
-                              updateItemQuantity(index, Math.max(1, cart[index].quantity - 1))
+                              updateItemQuantity(
+                                index,
+                                Math.max(1, cart[index].quantity - 1)
+                              )
                             }
                           >
                             –
@@ -214,7 +248,10 @@ const Products = () => {
                             variant="outline-secondary"
                             size="sm"
                             onClick={() =>
-                              updateItemQuantity(index, cart[index].quantity + 1)
+                              updateItemQuantity(
+                                index,
+                                cart[index].quantity + 1
+                              )
                             }
                           >
                             +

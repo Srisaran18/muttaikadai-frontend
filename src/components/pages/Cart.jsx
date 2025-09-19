@@ -217,7 +217,7 @@ const Cart = () => {
                   <div className="text-end">
                     <p className="fw-bold mb-1">₹{getItemTotal(item)}</p>
                     <button
-                      className="btn btn-link text-danger p-0"
+                      className="btn btn-danger text-light p-0"
                       onClick={() => removeItemByIndex(index)}
                     >
                       Remove
@@ -247,7 +247,7 @@ const Cart = () => {
             </div>
 
             <button
-              className="btn btn-dark w-100 mt-3"
+              className="btn btn-success w-100 mt-3"
               onClick={() => setShowModal(true)}
               disabled={!cart || cart.length === 0}
             >

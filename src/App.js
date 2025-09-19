@@ -29,6 +29,7 @@ import ManageUsers from "./components/admin/ManageUsers";
 // import SalesGraph from "./components/admin/SalesGraph";
 import Products from "./components/pages/Products";
 import ManageProducts from "./components/admin/ManageProducts";
+import PageNotFound from "./components/pages/PageNotFound";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
                   <Route path="/home" element={<Home />} />
                   <Route path="/products/:id" element={<Products />} />
                   <Route path="/products/" element={<Products />} />
+                  <Route path="*" element={<PageNotFound />} />
                   {/* <Route path="/home" element={<Test />} /> */}
                   <Route
                     path="/cart"

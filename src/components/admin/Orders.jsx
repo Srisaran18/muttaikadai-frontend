@@ -10,6 +10,10 @@ const Orders = () => {
   const [showModal, setShowModal] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
+  // pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10;
+
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -19,8 +23,8 @@ const Orders = () => {
 
       const response = await fetch(`${API_URL}/api/orders/admin`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -41,21 +45,18 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
-  useEffect(
-    () => {
-      if (showModal) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "";
-      }
-      return () => {
-        document.body.style.overflow = "";
-      };
-    },
-    [showModal]
-  );
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showModal]);
 
-  const handleViewOrder = order => {
+  const handleViewOrder = (order) => {
     setSelectedOrder(order);
     setShowModal(true);
   };
@@ -79,21 +80,18 @@ const Orders = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ status: newStatus })
+          body: JSON.stringify({ status: newStatus }),
         }
       );
 
       if (response.ok) {
-        // Update the order status in the local state
         setOrders(
-          orders.map(
-            order =>
-              order._id === orderId ? { ...order, status: newStatus } : order
+          orders.map((order) =>
+            order._id === orderId ? { ...order, status: newStatus } : order
           )
         );
-        // If the selected order is being updated, update it in the modal as well
         if (selectedOrder && selectedOrder._id === orderId) {
           setSelectedOrder({ ...selectedOrder, status: newStatus });
         }
@@ -108,7 +106,7 @@ const Orders = () => {
     }
   };
 
-  const getStatusColor = status => {
+  const getStatusColor = (status) => {
     switch (status) {
       case "pending":
         return "warning";
@@ -125,13 +123,17 @@ const Orders = () => {
     }
   };
 
+  // pagination logic
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   if (loading) return <div className="container my-5">Loading orders...</div>;
   if (error)
-    return (
-      <div className="container my-5 text-danger">
-        Error: {error}
-      </div>
-    );
+    return <div className="container my-5 text-danger">Error: {error}</div>;
 
   return (
     <div className="container my-5">
@@ -141,96 +143,143 @@ const Orders = () => {
           ← Back
         </Link>
       </div>
+
       {orders.length > 0 ? (
-        <div className="table-responsive">
-          <table className="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th>S no:</th>
-                <th>Order ID</th>
-                <th>User</th>
-                <th>Items</th>
-                <th>Total Price</th>
-                <th>Order Date</th>
-                <th>Delivery Address</th>
-                <th>Status</th>
-                <th>More details</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order, index) => (
-                <tr key={order._id || index}>
-                  <td>{index + 1}</td>
-                  <td>{order._id}</td>
-                  <td>
-                    {order.user?.name || "-"} ({order.user?.email || "-"})
-                  </td>
-                  <td>
-                    {order.items?.map((it, i) => (
-                      <div key={i}>
-                        {it.name} × {it.quantity} @ ₹{it.unitPrice}
-                      </div>
-                    ))}
-                  </td>
-                  <td>₹{order.totalPrice}</td>
-                  <td>
-                    {new Date(
-                      order.orderDate || order.createdAt
-                    ).toLocaleDateString()}
-                  </td>
-                  <td>
-                    {order.deliveryAddress && (
-                      <div
-                        className="text-wrap"
-                        style={{
-                          wordBreak: "break-word",
-                          whiteSpace: "pre-wrap",
-                        }}
-                      >
-                        {order.deliveryAddress.line1}
-                        {order.deliveryAddress.line2
-                          ? `, ${order.deliveryAddress.line2}`
-                          : ""}
-                        {`, ${order.deliveryAddress.city}, ${order.deliveryAddress.state}, ${order.deliveryAddress.postalCode}`}
-                      </div>
-                    )}
-                  </td>
-                  <td>
-                    <select
-                      className={`form-select form-select-sm bg-${getStatusColor(
-                        order.status
-                      )} text-white`}
-                      value={order.status}
-                      onChange={(e) =>
-                        handleStatusChange(order._id, e.target.value)
-                      }
-                      disabled={updatingStatus}
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="processing">Processing</option>
-                      <option value="shipped">Shipped</option>
-                      <option value="delivered">Delivered</option>
-                      <option value="cancelled">Cancelled</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleViewOrder(order)}
-                    >
-                      View
-                    </button>
-                  </td>
+        <>
+          <div className="table-responsive">
+            <table className="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>S no:</th>
+                  <th>Order ID</th>
+                  <th>User</th>
+                  <th>Items</th>
+                  <th>Total Price</th>
+                  <th>Order Date</th>
+                  <th>Delivery Address</th>
+                  <th>Status</th>
+                  <th>More details</th>
                 </tr>
+              </thead>
+              <tbody>
+                {currentOrders.map((order, index) => (
+                  <tr key={order._id || index}>
+                    <td>{indexOfFirstOrder + index + 1}</td>
+                    <td>{order._id}</td>
+                    <td>
+                      {order.user?.name || "-"} ({order.user?.email || "-"})
+                    </td>
+                    <td>
+                      {order.items?.map((it, i) => (
+                        <div key={i}>
+                          {it.name} × {it.quantity} @ ₹{it.unitPrice}
+                        </div>
+                      ))}
+                    </td>
+                    <td>₹{order.totalPrice}</td>
+                    <td>
+                      {new Date(
+                        order.orderDate || order.createdAt
+                      ).toLocaleDateString()}
+                    </td>
+                    <td>
+                      {order.deliveryAddress && (
+                        <div
+                          className="text-wrap"
+                          style={{
+                            wordBreak: "break-word",
+                            whiteSpace: "pre-wrap",
+                          }}
+                        >
+                          {order.deliveryAddress.line1}
+                          {order.deliveryAddress.line2
+                            ? `, ${order.deliveryAddress.line2}`
+                            : ""}
+                          {`, ${order.deliveryAddress.city}, ${order.deliveryAddress.state}, ${order.deliveryAddress.postalCode}`}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <select
+                        className={`form-select form-select-sm bg-${getStatusColor(
+                          order.status
+                        )} text-white`}
+                        value={order.status}
+                        onChange={(e) =>
+                          handleStatusChange(order._id, e.target.value)
+                        }
+                        disabled={updatingStatus}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleViewOrder(order)}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination Controls */}
+          <nav className="mt-3">
+            <ul className="pagination justify-content-center">
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
+                <button
+                  className="page-link"
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+              </li>
+
+              {[...Array(totalPages)].map((_, i) => (
+                <li
+                  key={i}
+                  className={`page-item ${
+                    currentPage === i + 1 ? "active" : ""
+                  }`}
+                >
+                  <button className="page-link" onClick={() => paginate(i + 1)}>
+                    {i + 1}
+                  </button>
+                </li>
               ))}
-            </tbody>
-          </table>
-        </div>
+
+              <li
+                className={`page-item ${
+                  currentPage === totalPages ? "disabled" : ""
+                }`}
+              >
+                <button
+                  className="page-link"
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </>
       ) : (
         <div className="alert alert-info">No orders found.</div>
       )}
 
-      {/* Modal for Order Details */}
+      {/* Order Details Modal */}
       {showModal && selectedOrder && (
         <div
           className="modal show d-block"
@@ -249,6 +298,7 @@ const Orders = () => {
                 />
               </div>
               <div className="modal-body">
+                {/* Order + User + Address Details */}
                 <div className="row mb-4">
                   <div className="col-md-6">
                     <h6 className="text-uppercase text-muted small">

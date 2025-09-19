@@ -244,8 +244,8 @@ const Home = () => {
                   Trusted by thousands of families
                 </li>
               </ul>
-              <Link to="/shop" className="btn btn-primary mt-3">
-                Visit Our Farm
+              <Link to="/products" className="btn btn-primary mt-3">
+                Check Our Products
               </Link>
             </div>
           </div>

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
   const { user } = useAuth();
+  const [loading, setLoading] = useState(false); // 🔹 loading state
   const [formData, setFormData] = useState({
     _id: null,
     name: "",
@@ -20,6 +21,7 @@ const ManageProducts = () => {
   // Load products on mount
   useEffect(() => {
     const load = async () => {
+      setLoading(true); // show loader
       try {
         const res = await fetch(`${API_URL}/api/products`);
         const data = await res.json();
@@ -27,6 +29,8 @@ const ManageProducts = () => {
       } catch (err) {
         console.error(err);
         alert("Failed to load products");
+      } finally {
+        setLoading(false); // hide loader
       }
     };
     load();
@@ -41,11 +45,12 @@ const ManageProducts = () => {
     }));
   };
 
-  // Handle image upload (upload to backend and store URL)
+  // Handle image upload
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     try {
+      setLoading(true);
       const body = new FormData();
       body.append("image", file);
       const res = await fetch(`${API_URL}/api/products/upload`, {
@@ -61,6 +66,8 @@ const ManageProducts = () => {
     } catch (err) {
       console.error(err);
       alert(err.message || "Image upload failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,19 +79,21 @@ const ManageProducts = () => {
         return;
       }
 
-      // normalize numbers
+      setLoading(true);
+
       const payload = {
         name: formData.name,
         type: formData.type,
         price: Number(formData.price),
-        bulkQuantity: formData.bulkQuantity === "" ? 0 : Number(formData.bulkQuantity),
+        bulkQuantity:
+          formData.bulkQuantity === "" ? 0 : Number(formData.bulkQuantity),
         bulkPrice: formData.bulkPrice === "" ? 0 : Number(formData.bulkPrice),
         image: formData.image || "",
         stock: formData.stock === "" ? 0 : Number(formData.stock),
       };
 
       if (formData._id) {
-        // Update existing by _id
+        // Update existing
         const res = await fetch(`${API_URL}/api/products/${formData._id}`, {
           method: "PUT",
           headers: {
@@ -95,7 +104,9 @@ const ManageProducts = () => {
         });
         if (!res.ok) throw new Error("Update failed");
         const updated = await res.json();
-        setProducts((prev) => prev.map((p) => (p._id === updated._id ? updated : p)));
+        setProducts((prev) =>
+          prev.map((p) => (p._id === updated._id ? updated : p))
+        );
       } else {
         // Create new
         const res = await fetch(`${API_URL}/api/products`, {
@@ -125,6 +136,8 @@ const ManageProducts = () => {
     } catch (err) {
       console.error(err);
       alert(err.message || "Action failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -142,9 +155,11 @@ const ManageProducts = () => {
     });
   };
 
+  // Delete product
   const handleDelete = async (_id) => {
     if (!window.confirm("Delete this product?")) return;
     try {
+      setLoading(true);
       const res = await fetch(`${API_URL}/api/products/${_id}`, {
         method: "DELETE",
         headers: {
@@ -168,6 +183,8 @@ const ManageProducts = () => {
     } catch (err) {
       console.error(err);
       alert(err.message || "Delete failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -180,142 +197,156 @@ const ManageProducts = () => {
         </Link>
       </div>
 
+      {/* Loader Overlay */}
+      {loading && (
+        <div className="text-center my-5">
+          <div className="spinner-border text-primary" role="status"></div>
+          <p className="mt-2">Loading...</p>
+        </div>
+      )}
+
       {/* Product Form */}
-      <div className="card p-4 mb-5">
-        <h4>{formData._id ? "Edit Product" : "Add Product"}</h4>
-        <div className="row g-3">
-          <div className="col-md-6">
-            <input
-              type="text"
-              name="name"
-              placeholder="Product Name"
-              className="form-control"
-              value={formData.name}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-6">
-            <select
-              name="type"
-              className="form-control"
-              value={formData.type}
-              onChange={handleChange}
-            >
-              <option value="kg">Kg</option>
-              <option value="nos">Nos</option>
-            </select>
-          </div>
-          <div className="col-md-6">
-            <input
-              type="number"
-              name="price"
-              placeholder="Price"
-              className="form-control"
-              value={formData.price}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-6">
-            <input
-              type="number"
-              name="bulkQuantity"
-              placeholder="Bulk Quantity"
-              className="form-control"
-              value={formData.bulkQuantity}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-6">
-            <input
-              type="number"
-              name="bulkPrice"
-              placeholder="Bulk Price"
-              className="form-control"
-              value={formData.bulkPrice}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-6">
-            <input
-              type="number"
-              name="stock"
-              placeholder="Stock Available"
-              className="form-control"
-              value={formData.stock}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-6">
-            <input
-              type="file"
-              accept="image/*"
-              className="form-control"
-              onChange={handleImageChange}
-            />
-            {formData.image && (
-              <img
-                src={formData.image}
-                alt="preview"
-                className="mt-2"
-                style={{ width: "80px", height: "80px", objectFit: "cover" }}
+      {!loading && (
+        <div className="card p-4 mb-5">
+          <h4>{formData._id ? "Edit Product" : "Add Product"}</h4>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <input
+                type="text"
+                name="name"
+                placeholder="Product Name"
+                className="form-control"
+                value={formData.name}
+                onChange={handleChange}
               />
+            </div>
+            <div className="col-md-6">
+              <select
+                name="type"
+                className="form-control"
+                value={formData.type}
+                onChange={handleChange}
+              >
+                <option value="kg">Kg</option>
+                <option value="nos">Nos</option>
+              </select>
+            </div>
+            <div className="col-md-6">
+              <input
+                type="number"
+                name="price"
+                placeholder="Price"
+                className="form-control"
+                value={formData.price}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-6">
+              <input
+                type="number"
+                name="bulkQuantity"
+                placeholder="Bulk Quantity"
+                className="form-control"
+                value={formData.bulkQuantity}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-6">
+              <input
+                type="number"
+                name="bulkPrice"
+                placeholder="Bulk Price"
+                className="form-control"
+                value={formData.bulkPrice}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-6">
+              <input
+                type="number"
+                name="stock"
+                placeholder="Stock Available"
+                className="form-control"
+                value={formData.stock}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-6">
+              <input
+                type="file"
+                accept="image/*"
+                className="form-control"
+                onChange={handleImageChange}
+              />
+              {formData.image && (
+                <img
+                  src={formData.image}
+                  alt="preview"
+                  className="mt-2"
+                  style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="mt-4 d-flex gap-2">
+            <button className="btn btn-primary" onClick={handleAddOrUpdate}>
+              {formData._id ? "Update Product" : "Add Product"}
+            </button>
+            {formData._id && (
+              <button
+                className="btn btn-danger"
+                onClick={() => handleDelete(formData._id)}
+              >
+                Delete Product
+              </button>
             )}
           </div>
         </div>
-
-        <div className="mt-4 d-flex gap-2">
-          <button className="btn btn-primary" onClick={handleAddOrUpdate}>
-            {formData._id ? "Update Product" : "Add Product"}
-          </button>
-          {formData._id && (
-            <button
-              className="btn btn-danger"
-              onClick={() => handleDelete(formData._id)}
-            >
-              Delete Product
-            </button>
-          )}
-        </div>
-      </div>
+      )}
 
       {/* Product List */}
-      <h3>Product List</h3>
-      <div className="row">
-        {products.map((product) => (
-          <div
-            className="col-md-3 mb-4 text-center"
-            key={product._id}
-            style={{ cursor: "pointer" }}
-            onClick={() => handleEdit(product)}
-          >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="img-fluid mb-2"
-              style={{
-                width: "120px",
-                height: "120px",
-                objectFit: "cover",
-                borderRadius: "8px",
-                border: "1px solid #ddd",
-              }}
-            />
-            <h6>{product.name}</h6>
-            <small>Stock: {product.stock}</small>
-            <div className="mt-2">
-              <button
-                className="btn btn-sm btn-outline-danger"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(product._id);
-                }}
+      {!loading && (
+        <>
+          <h3>Product List</h3>
+          <div className="row">
+            {products.map((product) => (
+              <div
+                className="col-md-3 mb-4 text-center"
+                key={product._id}
+                style={{ cursor: "pointer" }}
+                onClick={() => handleEdit(product)}
               >
-                Delete
-              </button>
-            </div>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="img-fluid mb-2"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    border: "1px solid #ddd",
+                  }}
+                />
+                <h6>{product.name}</h6>
+                <small>Stock: {product.stock}</small>
+                <div className="mt-2">
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(product._id);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 };
