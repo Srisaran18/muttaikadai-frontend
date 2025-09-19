@@ -6,12 +6,12 @@ import API_URL from "../../Config";
 const UserProfile = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState({
-    name: "",
-    mail: "",
-    number: "",
     username: "",
     email: "",
     phone: "",
+    name: "",
+    mail: "",
+    number: "",
     houseNo: "",
     street: "",
     pincode: "",
@@ -132,14 +132,17 @@ const UserProfile = () => {
 
       let res;
       if (editingAddressId) {
-        res = await fetch(`${API_URL}/api/users/me/addresses/${editingAddressId}`, {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+        res = await fetch(
+          `${API_URL}/api/users/me/addresses/${editingAddressId}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
       } else {
         res = await fetch(`${API_URL}/api/users/me/addresses`, {
           method: "POST",
@@ -158,7 +161,9 @@ const UserProfile = () => {
 
       const saved = await res.json();
       if (editingAddressId) {
-        setAddresses((prev) => prev.map((a) => (a._id === saved._id ? saved : a)));
+        setAddresses((prev) =>
+          prev.map((a) => (a._id === saved._id ? saved : a))
+        );
       } else {
         setAddresses((prev) => [...prev, saved]);
       }
@@ -199,17 +204,36 @@ const UserProfile = () => {
     }
   };
 
-  if (loading) return <div className="container my-5">Loading profile...</div>;
+  /** 🔹 Loader & Error Handling */
+  if (loading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "60vh" }}
+      >
+        <div className="text-center">
+          <div className="spinner-border text-primary mb-3" role="status"></div>
+          <p className="fw-semibold">Loading profile...</p>
+        </div>
+      </div>
+    );
+
   if (error)
-    return <div className="container my-5 text-danger">Error: {error}</div>;
+    return (
+      <div className="container my-5 text-danger text-center">
+        <h5>Error: {error}</h5>
+      </div>
+    );
 
   return (
     <div className="container my-5">
       {/* 🔹 Profile Form */}
       <div className="card shadow-sm border-0 rounded-3 mb-5">
         <div className="card-body p-4">
-          <h2 className="mb-4 text-primary">User Profile</h2>
-          <form onSubmit={(e) => e.preventDefault()} className="row g-3">
+          {/* ✅ Centered heading */}
+          <h2 className="mb-4 text-primary text-center">User Profile</h2>
+
+          <form onSubmit={(e) => e.preventDefault()} className="row g-4">
             <div className="col-md-6">
               <label className="form-label fw-semibold">Username</label>
               <input
@@ -247,8 +271,16 @@ const UserProfile = () => {
 
             {/* Address Section */}
             <div className="col-12 mt-4 d-flex align-items-center justify-content-between">
-              <h4 className="text-secondary">{editingAddressId ? "Edit Address" : "Add New Address"}</h4>
-              <button className="btn btn-outline-secondary btn-sm" type="button" onClick={resetAddressForm}>Reset</button>
+              <h4 className="text-secondary mb-0">
+                {editingAddressId ? "Edit Address" : "Add New Address"}
+              </h4>
+              <button
+                className="btn btn-outline-secondary btn-sm"
+                type="button"
+                onClick={resetAddressForm}
+              >
+                Reset
+              </button>
             </div>
 
             <div className="col-md-6">
@@ -345,7 +377,11 @@ const UserProfile = () => {
             </div>
 
             <div className="col-12 text-end">
-              <button onClick={onSubmitAddress} className="btn btn-primary px-4" disabled={addresses.length >= 3 && !editingAddressId}>
+              <button
+                onClick={onSubmitAddress}
+                className="btn btn-primary px-4"
+                disabled={addresses.length >= 3 && !editingAddressId}
+              >
                 {editingAddressId ? "Update Address" : "Save Address"}
               </button>
             </div>
@@ -361,10 +397,10 @@ const UserProfile = () => {
             <div key={address._id || index} className="col-md-6 col-lg-4 mb-4">
               <div className="card shadow-sm border-0 h-100 hover-shadow">
                 <div className="card-body">
-                  <h5 className="card-title text-primary">
+                  <h5 className="card-title text-primary d-flex align-items-center justify-content-between">
                     {address.label || `Address ${index + 1}`}
                     {address.isDefault && (
-                      <span className="badge bg-primary ms-2">Default</span>
+                      <span className="badge bg-primary">Default</span>
                     )}
                   </h5>
                   <p className="card-text small">
@@ -376,8 +412,18 @@ const UserProfile = () => {
                     {address.country}
                   </p>
                   <div className="d-flex justify-content-between">
-                    <button className="btn btn-sm btn-outline-primary" onClick={() => onEditAddress(address)}>Edit</button>
-                    <button className="btn btn-sm btn-outline-danger" onClick={() => onDeleteAddress(address._id)}>Delete</button>
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => onEditAddress(address)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => onDeleteAddress(address._id)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               </div>
