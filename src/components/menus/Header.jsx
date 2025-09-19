@@ -114,9 +114,9 @@ const Header = () => {
                 Products
               </Link>
             </li>
-            
+
             <li className="nav-item">
-              <a
+              <span
                 className="nav-link"
                 onClick={(e) => {
                   e.preventDefault();
@@ -124,7 +124,7 @@ const Header = () => {
                 }}
               >
                 About us
-              </a>
+              </span>
             </li>
             <li className="nav-item">
               <a

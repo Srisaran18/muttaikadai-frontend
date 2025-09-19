@@ -178,10 +178,18 @@ const Home = () => {
           ) : (
             products.map((product) => (
               <div className="col-md-3" key={product._id}>
-                <Link key={product._id} to={`/products/${product._id}`} className="text-decoration-none">
+                <Link
+                  key={product._id}
+                  to={`/products/${product._id}`}
+                  className="text-decoration-none"
+                >
                   <div
-                    className="border rounded bg-success bg-opacity-25 d-flex flex-column overflow-hidden"
-                    style={{ height: "300px" }}
+                    className="border rounded  bg-opacity-25 d-flex flex-column overflow-hidden"
+                    style={{
+                      height: "300px",
+                      backgroundColor: "rgb(255 197 166)",
+                      color: "white",
+                    }}
                   >
                     <img
                       src={product.image}
@@ -217,8 +225,8 @@ const Home = () => {
             <div className="col-md-6">
               <h2 className="mb-3">Uncompromising Quality You Can Trust</h2>
               <p className="text-muted">
-                At Muttaikadai, we prioritize freshness and purity in every egg we
-                deliver. Our eggs are sourced directly from trusted farms,
+                At Muttaikadai, we prioritize freshness and purity in every egg
+                we deliver. Our eggs are sourced directly from trusted farms,
                 handled with care, and quality-checked to ensure you receive
                 nothing but the best.
               </p>
